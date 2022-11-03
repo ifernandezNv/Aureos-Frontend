@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Wave from '../components/Wave';
 import ActividadH from '../components/ActividadH';
+import Usuario from '../components/Usuario';
 import Navegacion from '../components/Navegacion';
 import axios from 'axios';
 
@@ -15,6 +16,7 @@ import axios from 'axios';
 function Perfil({navigation, route}) {
   const {usuario, setUsuario, token, setToken} = useAureos();
   const [actividades, setActividades] = useState([]);
+  const [usuarios, setUsuarios] = useState([]);
 
   useEffect(()=>{
     
@@ -37,6 +39,51 @@ function Perfil({navigation, route}) {
     }
 
   },[])
+
+  useEffect(()=>{
+    if(usuarios.length === 0){
+      obtenerUsuarios();
+    }
+    async function obtenerUsuarios(){
+      if(usuario.tipo === 'admin'){
+        usuariosAll();
+        return
+      }
+        obtenerSoloUsuarios();
+    }
+    
+  },[])
+
+  async function usuariosAll(){
+    const config = {
+      headers: {
+        "Content-Type": 'application/json',
+        authorization: `Bearer ${token}`
+      }
+    }
+    try {
+      const {data} = await axios(`${process.env.API_URL}/usuarios/todos`, config);
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+async function obtenerSoloUsuarios(){
+    const config = {
+      headers: {
+        "Content-Type": 'application/json',
+        authorization: `Bearer ${token}`
+      }
+    }
+    try {
+      const {data} = await axios(`${process.env.API_URL}/usuarios`, config);
+      setUsuarios(data);
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
 
   async function eliminarToken(){
     Alert.alert('Sesión cerrada correctamente');
@@ -75,19 +122,36 @@ function Perfil({navigation, route}) {
           </View>
         </View>
         {usuario.tipo === 'admin' || usuario.tipo === 'profesional' && 
-          <View style={styles.actividades}>
-            <Text style={styles.encabezado}>Actividades <Text style={styles.span}>Creadas</Text></Text>
-            {actividades.length === 0 ? <Text>No haz creado actividades</Text> :(
-              <FlatList
-                data={actividades}
-                keyExtractor={ (actividad) => (actividad._id.toString()) }
-                renderItem={ ({item}) => (
-                  <ActividadH actividad={item}/>
-                )}
-                horizontal={true}
-              />
-            )}
-          </View>
+          <>
+            <View style={styles.actividades}>
+              <Text style={styles.encabezado}>Actividades <Text style={styles.span}>Creadas</Text></Text>
+              {actividades.length === 0 ? <Text>No haz creado actividades</Text> :(
+                <FlatList
+                  data={actividades}
+                  keyExtractor={ (actividad) => (actividad._id.toString()) }
+                  renderItem={ ({item}) => (
+                    <ActividadH actividad={item}/>
+                  )}
+                  horizontal={true}
+                />
+              )}
+            </View>
+            <View style={{
+              marginHorizontal: 20,
+              marginVertical: 30,
+            }}>
+              <Text style={styles.encabezado}>Usuarios <Text style={styles.span}>Registrados</Text></Text>
+              {usuarios.length === 0 ? <Text>Cargando....</Text> :(
+                <FlatList
+                  data={usuarios}
+                  keyExtractor={ (usuario) => (usuario._id.toString()) }
+                  renderItem={ ({item}) => (
+                    <Usuario usuarioListado={item}/>
+                  )}
+                />
+              )} 
+            </View>
+          </>
         }
         {/* <Video
             ref={video}
