@@ -37,14 +37,10 @@ const PATOLOGIAS = [
 
 function ActividadesRecomendadas({route, navigation, user = route.usuario, tkn = route.token}) {
 
+  const {usuario, token} = useAureos();
   const [actividades, setActividades] = useState([]);
   const [patologia, setPatologia] = useState({});
 
-  let {usuario, token} = route.params;
-  if(user && tkn){
-    usuario = user;
-    token = tkn;
-  }
   useEffect(()=>{
     buscarRespuestas();
   },[])
@@ -82,7 +78,7 @@ function ActividadesRecomendadas({route, navigation, user = route.usuario, tkn =
       }
     }
     try {
-      const {data} = await axios.post(`${process.env.API_URL}/formulario/buscar-patologia`, {idUsuario: usuario?._id}, config);
+      const {data} = await axios.post(`${process.env.API_URL}/formulario/buscar-patologia`, {idUsuario: usuario._id}, config);
       setPatologia(PATOLOGIAS[data.patologia - 1]);
     } catch (error) {
       console.log("Error jejeje: ", error.response.data.msg);
@@ -107,8 +103,7 @@ function ActividadesRecomendadas({route, navigation, user = route.usuario, tkn =
             />
           </View>
       </View>
-      <Navegacion visible={true} usuario={usuario} token={token}/>
-    
+      <Navegacion visible={true}/>
     </>
   )
 }

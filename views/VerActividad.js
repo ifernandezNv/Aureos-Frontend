@@ -16,10 +16,10 @@ const VerActividad = ({navigation}) => {
         <Button onPress={()=>volver()} style={styles.botonVolver} icon='arrow-left'>Volver</Button>
         <View style={styles.contenedor}>
             <View style={styles.actividad}>
-                    <Image
-                        source={{uri : imagen}}
-                        style={styles.imagenStyles}
-                    />
+                <Image
+                    source={{uri : imagen}}
+                    style={styles.imagenStyles}
+                />
                 <View style={styles.contenido}>
                     <Text>Duración: {duracion}</Text>
                     <Text>{titulo}</Text>

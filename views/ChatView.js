@@ -59,7 +59,7 @@ function ChatView({route, navigation}) {
 
   async function irAlCanal(canal){
     setCanalSeleccionado(canal);
-    console.log(await canal.queryMembers({}, {}, {}));
+    console.log(await canal.queryMembers({}, {}, {}).members);
   }
 
   return (
