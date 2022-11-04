@@ -63,7 +63,7 @@ function Perfil({navigation, route}) {
     }
     try {
       const {data} = await axios(`${process.env.API_URL}/usuarios/todos`, config);
-      console.log(data);
+      setUsuarios(data);
     } catch (error) {
       console.log(error);
     }
@@ -78,7 +78,6 @@ async function obtenerSoloUsuarios(){
     try {
       const {data} = await axios(`${process.env.API_URL}/usuarios`, config);
       setUsuarios(data);
-      console.log(data);
     } catch (error) {
       console.log(error);
     }

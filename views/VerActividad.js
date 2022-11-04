@@ -1,33 +1,65 @@
-import { View, Text, StyleSheet, Image, Platform } from 'react-native';
+import { View, Text, StyleSheet, Image, Platform, Pressable } from 'react-native';
 import {Button} from 'react-native-paper';
-
+import { useEffect } from 'react';
 import useAureos from '../hooks/useAureos';
 import Navegacion from '../components/Navegacion';
-const VerActividad = ({navigation}) => {
+import axios from 'axios';
 
-    const {actividadSeleccionada} = useAureos();
+const VerActividad = ({navigation, route}) => {
+    
+    const {id} = route.params;
+    const {setActividadSeleccionada, actividadSeleccionada, token} = useAureos();
+
+    useEffect(()=>{
+        if(id){
+            obtenerActividad();
+            return
+        }
+        async function obtenerActividad(){
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    authorization: `Bearer ${token}`
+                }
+            }
+            try {
+                const {data} = await axios(`${process.env.API_URL}/actividades/${id}`, config);
+                setActividadSeleccionada(data);
+            } catch (error) {
+                console.log(error.response.data.msg);
+            }
+        }
+    },[])
     const {categoria, descripcion, instrucciones, titulo, imagen, duracion} = actividadSeleccionada;
     
     function volver(){
         navigation.goBack();
     }
+
+    async function completarActividad(){
+        console.log('completada jejejejejeje');
+    }
+
   return (
     <>
         <Button onPress={()=>volver()} style={styles.botonVolver} icon='arrow-left'>Volver</Button>
         <View style={styles.contenedor}>
             <View style={styles.actividad}>
                 <Image
-                    source={{uri : imagen}}
+                    source={{uri : actividadSeleccionada.imagen}}
                     style={styles.imagenStyles}
                 />
                 <View style={styles.contenido}>
-                    <Text>Duración: {duracion}</Text>
-                    <Text>{titulo}</Text>
-                    <Text>{descripcion}</Text>
-                    <Text>{instrucciones}</Text>
+                    <Text>Duración: {actividadSeleccionada.duracion}</Text>
+                    <Text>{actividadSeleccionada.titulo}</Text>
+                    <Text>{actividadSeleccionada.descripcion}</Text>
+                    <Text>{actividadSeleccionada.instrucciones}</Text>
                 </View>
-                
+                <Pressable style={styles.boton} onPress={ ()=> completarActividad()}>
+                    <Text style={styles.botonTexto}>Hecha</Text>
+                </Pressable>
             </View>
+
         </View>
 
         <Navegacion visible={true}/>
@@ -37,34 +69,37 @@ const VerActividad = ({navigation}) => {
 
 const styles = StyleSheet.create({
     botonVolver:{
-        paddingVertical: Platform.OS === 'ios' ? 30 : 20,
+        paddingVertical: 20,
         backgroundColor: '#fff'
     },
     contenedor: {
         flex: 1,
-        backgroundColor: '#f8f8f8',
-        paddingHorizontal: 20,
+        backgroundColor: '#fff',
     },
     actividad: {
+        flex: 1,
         backgroundColor: '#fff',
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 5,
-        },
-        shadowOpacity: 0.36,
-        shadowRadius: 6.68,
-
-        elevation: 11,
-        borderRadius: 10
     },
     imagenStyles:{
         width: '100%',
-        height: 150,
+        height: 270,
     },
     contenido: {
         paddingHorizontal: 30,
         paddingVertical: 20,
+    },
+    boton: {
+        width: '70%',
+        marginHorizontal: '15%',
+        backgroundColor: '#6DD3B5',
+        padding: 10,
+        borderRadius: 10,
+    },
+    botonTexto: {
+        fontSize: 20,
+        textAlign: 'center',
+        color: '#fff',
+        fontWeight: '900'
     }
 });
 

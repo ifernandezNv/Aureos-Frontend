@@ -10,7 +10,7 @@ function Actividad({actividad}) {
   
   function verActividad(activity){
     setActividadSeleccionada(activity);
-    navigation.navigate('Ver Actividad', {actividadSeleccionada});
+    navigation.navigate('Ver Actividad', {id : activity._id});
 
   }
 
