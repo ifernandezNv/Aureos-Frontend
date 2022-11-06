@@ -2,14 +2,12 @@ import {StreamChat} from 'stream-chat';
 import {OverlayProvider, Chat, ChannelList, Channel, MessageList, MessageInput} from 'stream-chat-expo';
 
 import React, { useEffect, useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+  
 import {View, Text, StyleSheet, Platform} from 'react-native';
 import {Button} from 'react-native-paper';
 import useAureos from '../hooks/useAureos';
 import Navegacion from '../components/Navegacion';
 
-const Stack = createNativeStackNavigator();
 
 const client = StreamChat.getInstance(process.env.STREAM_KEY);
 
