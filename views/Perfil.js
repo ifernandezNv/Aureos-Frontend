@@ -17,6 +17,7 @@ function Perfil({navigation}) {
   const {usuario, setUsuario, token, setToken} = useAureos();
   const [actividades, setActividades] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
+  const [cantidadUsuarios, setCantidadUsuarios] = useState(0);
 
   useEffect(()=>{
     if(usuario.tipo !== 'usuario'){
@@ -40,6 +41,16 @@ function Perfil({navigation}) {
     }
     
   },[])
+
+  useEffect(()=>{ 
+    let cantidad = 0;
+    let usuarios = 0;
+    if(actividades.length > 0){
+      usuarios = actividades.reduce( (cantidad, actividad) => cantidad + actividad.completadaPor.length , 0 );
+      setCantidadUsuarios(usuarios);
+    }
+    
+  },[actividades])
 
   async function obtenerActividadesCreadas(){
     const config = {
@@ -128,9 +139,9 @@ function Perfil({navigation}) {
           </View>
           <View style={styles.card}>
             <Text style={styles.saludo}>Hola: <Text style={styles.span}>{usuario.nombre}</Text> </Text>
-            <Text>Haz realizado un total de: {actividades.length} actividades</Text>
+            <Text>Haz realizado un total de: <Text style={styles.span}>{actividades.length} actividades </Text></Text>
             {actividades.length !== 0 && usuario.tipo !== 'usuario' &&
-              <Text>Y se obtuvieron los siguientes resultados de la aplicación de las mismas</Text>
+              <Text>Se han utilizado: <Text style={styles.span}>{cantidadUsuarios} {cantidadUsuarios > 1 ? 'Veces' : 'Vez'}</Text> tus actividades</Text>
             }
             
           </View>
@@ -177,14 +188,6 @@ function Perfil({navigation}) {
               </View>
             </ScrollView>
           </ScrollView>
-        {/* <Video
-            ref={video}
-            source={{uri: 'https://res.cloudinary.com/ds6v7rbvr/video/upload/v1666656548/file_oa2o8u.mp4'}}
-            useNativeControls
-            resizeMode="contain"
-            isLooping
-            style={styles.video}
-        /> */}
       <Navegacion visible={true} usuario={usuario} token={token}/>
     </View>
   )

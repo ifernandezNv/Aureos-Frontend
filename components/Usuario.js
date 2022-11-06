@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     botonEditar: {
-        backgroundColor: '#E8BC24',
+        backgroundColor: '#6DD3B5',
         marginVertical: 10
     },
     botonEliminar: {

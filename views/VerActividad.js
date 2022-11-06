@@ -79,9 +79,7 @@ const VerActividad = ({navigation, route}) => {
                     </Pressable>
                 )}
             </View>
-
         </View>
-
         <Navegacion visible={true}/>
     </>
   )
