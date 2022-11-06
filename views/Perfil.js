@@ -20,7 +20,9 @@ function Perfil({navigation}) {
 
   useEffect(()=>{
     if(usuario.tipo !== 'usuario'){
-      obtenerActividadesCreadas()
+      obtenerActividadesCreadas();
+    }else{
+      obtenerActividadesCompletadas();
     }
   },[])
 
@@ -34,7 +36,7 @@ function Perfil({navigation}) {
         usuariosAll();
         return
       }
-        obtenerSoloUsuarios();
+      obtenerSoloUsuarios();
     }
     
   },[])
@@ -133,35 +135,46 @@ function Perfil({navigation}) {
           </View>
         </View>
 
-          <ScrollView>
-            <View style={styles.actividades}>
-              <Text style={styles.encabezado}>Actividades <Text style={styles.span}>Creadas</Text></Text>
-              {actividades.length === 0 ? <Text>No haz creado actividades</Text> :(
-                <FlatList
-                  data={actividades}
-                  keyExtractor={ (actividad) => (actividad._id.toString()) }
-                  renderItem={ ({item}) => (
-                    <ActividadH actividad={item}/>
-                  )}
-                  horizontal={true}
-                />
-              )}
-            </View>
-            <View style={{
-              marginHorizontal: 20,
-              marginVertical: 30,
-            }}>
-              <Text style={styles.encabezado}>Usuarios <Text style={styles.span}>Registrados</Text></Text>
-              {usuarios.length === 0 ? <Text>Cargando....</Text> :(
-                <FlatList
-                  data={usuarios}
-                  keyExtractor={ (usuario) => (usuario._id.toString()) }
-                  renderItem={ ({item}) => (
-                    <Usuario usuarioListado={item}/>
-                  )}
-                />
-              )} 
-            </View>
+          <ScrollView
+            horizontal={false}
+          >
+            <ScrollView
+              horizontal={false}
+              contentContainerStyle={{width: '100%', height: '100%'}}
+            >
+              <View style={styles.actividades}>
+                {usuario.tipo !== 'usuario' ? <Text style={styles.encabezado}>Actividades <Text style={styles.span}>Creadas</Text></Text> : <Text style={styles.encabezado}>Actividades <Text style={styles.span}>Completadas</Text></Text> }
+                {actividades.length === 0 && usuario.tipo !== 'usuario' ? <Text>No haz creado actividades</Text> :(
+                  <FlatList
+                    data={actividades}
+                    keyExtractor={ (actividad) => (actividad._id.toString()) }
+                    renderItem={ ({item}) => (
+                      <ActividadH actividad={item}/>
+                    )}
+                    horizontal={true}
+                  />
+                )}
+              </View>
+              <View style={{
+                marginHorizontal: 20,
+                marginVertical: 30,
+              }}>
+                {usuario.tipo !== 'usuario' && (
+                  <>
+                    <Text style={styles.encabezado}>Usuarios <Text style={styles.span}>Registrados</Text></Text>
+                    {usuarios.length === 0 ? <Text>Cargando....</Text> :(
+                      <FlatList
+                        data={usuarios}
+                        keyExtractor={ (usuario) => (usuario._id.toString()) }
+                        renderItem={ ({item}) => (
+                          <Usuario usuarioListado={item}/>
+                        )}
+                      />
+                    )}
+                  </>
+                )} 
+              </View>
+            </ScrollView>
           </ScrollView>
         {/* <Video
             ref={video}

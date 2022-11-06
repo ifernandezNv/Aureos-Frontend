@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, Platform, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Image, Platform, Pressable, Alert } from 'react-native';
 import {Button} from 'react-native-paper';
 import { useEffect } from 'react';
 import useAureos from '../hooks/useAureos';
@@ -25,7 +25,6 @@ const VerActividad = ({navigation, route}) => {
             try {
                 const {data} = await axios(`${process.env.API_URL}/actividades/${id}`, config);
                 setActividadSeleccionada(data);
-                console.log(data);
             } catch (error) {
                 console.log(error.response?.data?.msg);
             }
@@ -46,7 +45,10 @@ const VerActividad = ({navigation, route}) => {
         }
         try {
             const {data} = await axios.put(`${process.env.API_URL}/actividades/${_id}`, {idUsuario: usuario._id}, config );
-            console.log(data);
+            Alert.alert(data.msg);
+            setTimeout(() => {
+               navigation.goBack() 
+            }, 1000);
         } catch (error) {
             console.log(error.response);
         }
