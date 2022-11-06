@@ -24,7 +24,7 @@ function Perfil({navigation}) {
     }else{
       obtenerActividadesCompletadas();
     }
-  },[])
+  },[usuario])
 
 
   useEffect(()=>{
@@ -64,10 +64,11 @@ function Perfil({navigation}) {
       }
     }
     try {
+      console.log(usuario);
       const {data} = await axios(`${process.env.API_URL}/actividades/completadas/${usuario._id}`, config);
-      console.log(data);
+      setActividades(data);
     } catch (error) {
-      console.log(error);
+      console.log(error?.response?.data?.msg);
     }
   }
 
@@ -128,7 +129,7 @@ function Perfil({navigation}) {
           <View style={styles.card}>
             <Text style={styles.saludo}>Hola: <Text style={styles.span}>{usuario.nombre}</Text> </Text>
             <Text>Haz realizado un total de: {actividades.length} actividades</Text>
-            {actividades.length !== 0 &&
+            {actividades.length !== 0 && usuario.tipo !== 'usuario' &&
               <Text>Y se obtuvieron los siguientes resultados de la aplicación de las mismas</Text>
             }
             
