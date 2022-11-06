@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, View, FlatList, Text, Dimensions, Alert } from 'react-native';
+import { StyleSheet, View, FlatList, Text, Dimensions, Alert, ScrollView } from 'react-native';
 import {Video} from 'expo-av';
 import {Button} from 'react-native-paper';
 
@@ -19,26 +19,11 @@ function Perfil({navigation}) {
   const [usuarios, setUsuarios] = useState([]);
 
   useEffect(()=>{
-    
-    async function obtenerActividadesCreadas(){
-      const config = {
-        headers: {
-          "Content-Type": 'application/json',
-          authorization: `Bearer ${token}`
-        }
-      }
-      try {
-        const {data} = await axios.post(`${process.env.API_URL}/actividades/creadas`, {idUsuario: usuario._id}, config);
-        setActividades(data);
-      } catch (error) {
-        console.log(error?.response);
-      }
-    }
-    if(usuario?.tipo === 'admin' || usuario?.tipo === 'profesional'){
+    if(usuario.tipo !== 'usuario'){
       obtenerActividadesCreadas()
     }
-
   },[])
+
 
   useEffect(()=>{
     if(usuarios.length === 0){
@@ -54,6 +39,36 @@ function Perfil({navigation}) {
     
   },[])
 
+  async function obtenerActividadesCreadas(){
+    const config = {
+      headers: {
+        "Content-Type": 'application/json',
+        authorization: `Bearer ${token}`
+      }
+    }
+    try {
+      const {data} = await axios.post(`${process.env.API_URL}/actividades/creadas`, {idUsuario: usuario._id.toString()}, config);
+      setActividades(data);
+    } catch (error) {
+      console.log(error?.response);
+    }
+  }
+
+  async function obtenerActividadesCompletadas(){
+    const config={
+      headers: {
+        "Content-Type": 'application/json',
+        authorization: `Bearer ${token}`
+      }
+    }
+    try {
+      const {data} = await axios(`${process.env.API_URL}/actividades/completadas/${usuario._id}`, config);
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async function usuariosAll(){
     const config = {
       headers: {
@@ -68,7 +83,7 @@ function Perfil({navigation}) {
       console.log(error);
     }
   }
-async function obtenerSoloUsuarios(){
+  async function obtenerSoloUsuarios(){
     const config = {
       headers: {
         "Content-Type": 'application/json',
@@ -82,7 +97,6 @@ async function obtenerSoloUsuarios(){
       console.log(error);
     }
   }
-
 
   async function eliminarToken(){
     Alert.alert('Sesión cerrada correctamente');
@@ -118,8 +132,8 @@ async function obtenerSoloUsuarios(){
             
           </View>
         </View>
-        {usuario.tipo === 'admin' || usuario.tipo === 'profesional' && 
-          <>
+
+          <ScrollView>
             <View style={styles.actividades}>
               <Text style={styles.encabezado}>Actividades <Text style={styles.span}>Creadas</Text></Text>
               {actividades.length === 0 ? <Text>No haz creado actividades</Text> :(
@@ -148,8 +162,7 @@ async function obtenerSoloUsuarios(){
                 />
               )} 
             </View>
-          </>
-        }
+          </ScrollView>
         {/* <Video
             ref={video}
             source={{uri: 'https://res.cloudinary.com/ds6v7rbvr/video/upload/v1666656548/file_oa2o8u.mp4'}}

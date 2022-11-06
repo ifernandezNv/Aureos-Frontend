@@ -39,16 +39,12 @@ function ChatView({route, navigation}) {
           channel.addMembers(['6359c3d768deee0184746172']);
         }
         filtro = {members: {$in : [usuario._id]}};
-        // console.log(filtro);
-        // if(filtro){
-          const canalesPertenecienties = await client.queryChannels({members: {$in : [usuario._id]}});
-          console.log(await client.queryChannels(filtro));
-          setCanales(canalesPertenecienties);
-          await channel.create();
-          console.log(canalesPertenecienties);
-          setConectado(true);
-        // }
-        console.log(filtro);
+        const canalesPertenecienties = await client.queryChannels({members: {$in : [usuario._id]}});
+        console.log(await client.queryChannels(filtro));
+        setCanales(canalesPertenecienties);
+        await channel.create();
+        console.log(canalesPertenecienties);
+        setConectado(true);
         
       } catch (error) {
         console.log(error); 
