@@ -1,12 +1,9 @@
 import React, {useState, useEffect, useMemo} from 'react';
-import { StyleSheet, View, FlatList, Text } from 'react-native';
+import { StyleSheet, View, FlatList, Text, Alert } from 'react-native';
 import Actividad from '../components/Actividad';
 import axios from 'axios';
 import useAureos from '../hooks/useAureos';
 import Navegacion from '../components/Navegacion';
-
-//TODO: Pensar que más hacer con las actividades, es decir, buscar qué hacer cuando el usuario dé click en el botón de "Comenzar"
-
 
 const PATOLOGIAS = [
   {
@@ -35,18 +32,20 @@ const PATOLOGIAS = [
   }
 ]
 
-function ActividadesRecomendadas({route, navigation, user = route.usuario, tkn = route.token}) {
+function ActividadesRecomendadas({route, navigation}) {
 
   const {usuario, token} = useAureos();
   const [actividades, setActividades] = useState([]);
   const [patologia, setPatologia] = useState({});
 
   useEffect(()=>{
-    buscarRespuestas();
+    if(!patologia.nombre){
+      buscarRespuestas();
+    }
   },[])
 
   useEffect(()=>{
-    if(patologia){
+    if(patologia.nombre && actividades.length === 0){
       obtenerActividades();
     }
   },[patologia])
@@ -60,11 +59,18 @@ function ActividadesRecomendadas({route, navigation, user = route.usuario, tkn =
           authorization: `Bearer ${token}`
         }
       }
-  
       try {
         const {data} = await axios.post(`${process.env.API_URL}/actividades`, {categoria: patologia.nombre} , config);
+        const bandera = await data;
         setActividades(data);
+        if(bandera.length === 0){
+          Alert.alert('Alerta', 'No hay actividades para mostrarte');
+          // setTimeout(() => {
+          //   navigation.goBack();
+          // }, 2000);
+        }
       } catch (error) {
+        console.log(error);
         console.log("Error jejeje: ",error?.response?.data?.msg);
       }
     }

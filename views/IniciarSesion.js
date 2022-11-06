@@ -56,6 +56,9 @@ useEffect( ()=>{
   
     try {
       const {data} = await axios.post(`${process.env.API_URL}/usuarios/login`, {email, password});
+      console.log(data);
+      setUsuario(data);
+      setToken(data.token);
       const config = {
         headers: {
           "Content-Type": 'application/json',
@@ -63,6 +66,7 @@ useEffect( ()=>{
         }
       }
       const {data: formularioRespondido} = await axios.post(`${process.env.API_URL}/formulario`, {idUsuario: data._id}, config);
+      
       Alert.alert('Iniciando Sesión...');
       AsyncStorage.setItem('token', data.token);
       if(formularioRespondido?.enviado && data.tipo === 'usuario'){

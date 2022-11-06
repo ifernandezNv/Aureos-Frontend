@@ -23,35 +23,6 @@ function Formulario({navigation}) {
 
   const [respuestas, setRespuestas] = useState([]);
 
-
-  useEffect( ()=>{
-    async function obtenerToken(){
-      const tokenAlmacenado =  await AsyncStorage.getItem('token');
-      if(tokenAlmacenado){
-        setToken(tokenAlmacenado);
-      }
-    }
-    obtenerToken()
-  }, [])
-  useEffect( ()=>{
-    async function obtenerUsuario(){
-      const config = {
-        headers: {
-          "Content-Type": 'application/json',
-          authorization: `Bearer ${token}` 
-        }
-      }
-      try {
-        const {data} = await axios(`${process.env.API_URL}/usuarios/perfil`, config);
-        return setUsuario(data);
-      } catch (error) {
-        console.log(error?.response?.data?.msg);
-      }
-    }
-    obtenerUsuario();
-  },[token])
-
-
   function registrarRespuesta(){
     if(opcion === ''){
       Alert.alert('Debes seleccionar una opción');
@@ -74,7 +45,6 @@ function Formulario({navigation}) {
       return
     }
     setRespuestas([respuestaR1, respuestaR2, respuestaR3]);
-    console.log(respuestaR1);
     try {
       if(token){
         const config = {
@@ -84,15 +54,18 @@ function Formulario({navigation}) {
           }
         }
         const patologia = respuestas.reduce( (total, respuesta) => respuesta.valor + total,  0);
-        const {data} = await axios.post(`${process.env.API_URL}/formulario/enviar-formulario`, {respuestas, patologia: Math.ceil(patologia / 3), idUsuario: usuario._id }, config);
-        Alert.alert('Respuestas Registradas Correctamente');
-        setTimeout(() => {
-          if(patologia === 5){
-            Alert.alert('Hey', 'Basado en tus respuestas, te recomendamos las siguientes opciones: ', [{text: 'Ver Actividades', onPress: ()=>{navigation.navigate('Actividades')}}, {text: 'Hablar con un profesional', onPress: ()=>navigation.navigate('Chat')}]);
-            return;
-          }
-          navigation.navigate('Actividades');
-        }, 3000);
+        if(patologia > 0){
+          const {data} = await axios.post(`${process.env.API_URL}/formulario/enviar-formulario`, {respuestas, patologia: Math.ceil(patologia / 3), idUsuario: usuario._id }, config);
+  
+          Alert.alert('Respuestas Registradas Correctamente');
+          setTimeout(() => {
+            if(patologia === 5){
+              Alert.alert('Hey', 'Basado en tus respuestas, te recomendamos las siguientes opciones: ', [{text: 'Ver Actividades', onPress: ()=>{navigation.navigate('Actividades')}}, {text: 'Hablar con un profesional', onPress: ()=>navigation.navigate('Chat')}]);
+              return;
+            }
+            navigation.navigate('Actividades');
+          }, 3000);
+        }
       }
     } catch (error) {
       console.log(error);

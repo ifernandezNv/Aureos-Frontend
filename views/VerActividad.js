@@ -8,7 +8,7 @@ import axios from 'axios';
 const VerActividad = ({navigation, route}) => {
     
     const {id} = route.params;
-    const {setActividadSeleccionada, actividadSeleccionada, token} = useAureos();
+    const {setActividadSeleccionada, actividadSeleccionada, token, usuario} = useAureos();
 
     useEffect(()=>{
         if(id){
@@ -25,19 +25,31 @@ const VerActividad = ({navigation, route}) => {
             try {
                 const {data} = await axios(`${process.env.API_URL}/actividades/${id}`, config);
                 setActividadSeleccionada(data);
+                console.log(data);
             } catch (error) {
-                console.log(error.response.data.msg);
+                console.log(error.response?.data?.msg);
             }
         }
     },[])
-    const {categoria, descripcion, instrucciones, titulo, imagen, duracion} = actividadSeleccionada;
+    const {categoria, descripcion, instrucciones, titulo, imagen, duracion, _id} = actividadSeleccionada;
     
     function volver(){
         navigation.goBack();
     }
 
     async function completarActividad(){
-        console.log('completada jejejejejeje');
+        const config = {
+            headers: {
+                "Content-Type": "application/json",
+                authorization: `Bearer ${token}`
+            }
+        }
+        try {
+            const {data} = await axios.put(`${process.env.API_URL}/actividades/${_id}`, {idUsuario: usuario._id}, config );
+            console.log(data);
+        } catch (error) {
+            console.log(error.response);
+        }
     }
 
   return (

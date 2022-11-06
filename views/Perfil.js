@@ -13,7 +13,7 @@ import Navegacion from '../components/Navegacion';
 import axios from 'axios';
 
 
-function Perfil({navigation, route}) {
+function Perfil({navigation}) {
   const {usuario, setUsuario, token, setToken} = useAureos();
   const [actividades, setActividades] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
@@ -89,9 +89,7 @@ async function obtenerSoloUsuarios(){
     await AsyncStorage.removeItem('token');
     setUsuario({});
     setToken('');
-    setTimeout(() => {
-      navigation.navigate('Inicio');
-    }, 3000);
+    navigation.navigate('Inicio');
   }
 
   function cerrarSesion(){
