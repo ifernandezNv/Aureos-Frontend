@@ -69,9 +69,15 @@ const VerActividad = ({navigation, route}) => {
                     <Text>{actividadSeleccionada.descripcion}</Text>
                     <Text>{actividadSeleccionada.instrucciones}</Text>
                 </View>
-                <Pressable style={styles.boton} onPress={ ()=> completarActividad()}>
-                    <Text style={styles.botonTexto}>Hecha</Text>
-                </Pressable>
+                {actividadSeleccionada.completadaPor.includes(usuario._id) ? (
+                    <Pressable style={styles.botonDisabled}>
+                        <Text style={styles.botonTexto}> Actividad Completada</Text>
+                    </Pressable>
+                ) : (
+                    <Pressable style={actividadSeleccionada.completadaPor.includes(usuario._id) ? styles.botonDisabled : styles.boton} onPress={ ()=> completarActividad()}>
+                        <Text style={styles.botonTexto}>{actividadSeleccionada.completadaPor.includes(usuario._id) ? 'Actividad Completada' : 'Completar'}</Text>
+                    </Pressable>
+                )}
             </View>
 
         </View>
@@ -101,6 +107,13 @@ const styles = StyleSheet.create({
     contenido: {
         paddingHorizontal: 30,
         paddingVertical: 20,
+    },
+    botonDisabled: {
+        width: '70%',
+        marginHorizontal: '15%',
+        backgroundColor: '#7AB7A5',
+        padding: 10,
+        borderRadius: 10,
     },
     boton: {
         width: '70%',
