@@ -2,7 +2,7 @@ import {StreamChat} from 'stream-chat';
 import {OverlayProvider, Chat, ChannelList, Channel, MessageList, MessageInput} from 'stream-chat-expo';
 
 import React, { useEffect, useState } from 'react';
-  
+
 import {View, Text, StyleSheet, Platform} from 'react-native';
 import {Button} from 'react-native-paper';
 import useAureos from '../hooks/useAureos';
@@ -16,10 +16,11 @@ function ChatView({route, navigation}) {
   const [conectado, setConectado] = useState(false);
   const [canalSeleccionado, setCanalSeleccionado] = useState({});
   const [canales, setCanales] = useState([]);
-  const [filtro, setFiltro] = useState({});
+  // const [filtro, setFiltro] = useState({});
   const [paciente, setPaciente] = useState('')
-
+  let filtro = {};
   let channel = '';
+
 
   useEffect(()=>{
     conectarCliente();
@@ -28,7 +29,6 @@ function ChatView({route, navigation}) {
       const cliente = {
         id: usuario._id,
         nombre: usuario.nombre,
-        role: 'owner'
       }
       try {
         await client.connectUser(cliente, usuario.tokenStream); 
@@ -38,11 +38,18 @@ function ChatView({route, navigation}) {
         if(usuario.tipo === 'usuario'){
           channel.addMembers(['6359c3d768deee0184746172']);
         }
-        setFiltro({members: {$in : [cliente.id]}});
-        const canalesPertenecienties = await client.queryChannels(filtro);
-        setCanales(canalesPertenecienties);
-        await channel.watch();
-        setConectado(true);
+        filtro = {members: {$in : [usuario._id]}};
+        // console.log(filtro);
+        // if(filtro){
+          const canalesPertenecienties = await client.queryChannels({members: {$in : [usuario._id]}});
+          console.log(await client.queryChannels(filtro));
+          setCanales(canalesPertenecienties);
+          await channel.create();
+          console.log(canalesPertenecienties);
+          setConectado(true);
+        // }
+        console.log(filtro);
+        
       } catch (error) {
         console.log(error); 
       }
@@ -91,7 +98,7 @@ function ChatView({route, navigation}) {
                 <View style={styles.tituloChatlist}>
                   <Text style={styles.headingList}>Chats a los que perteneces</Text>
                 </View>
-                <ChannelList filters={filtro} onSelect={irAlCanal}/>
+                <ChannelList  onSelect={irAlCanal}/>
                 <Navegacion visible={true} usuario={usuario} token={token}/>
               </>
             }
