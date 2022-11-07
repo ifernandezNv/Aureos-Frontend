@@ -40,7 +40,7 @@ function Actividades({route, navigation}) {
 
   const {actividades, setActividades, usuario, token, actividadSeleccionada, setActividadSeleccionada} = useAureos();
 
-  const [categoria, setCategoria] = useState('');
+  const [categoria, setCategoria] = useState('todas');
 
 
   useEffect(()=>{
