@@ -1,17 +1,52 @@
-import { View, Text, Modal, Pressable, StyleSheet, TextInput } from 'react-native'
-import React from 'react'
+import { View, Text, Modal, Pressable, StyleSheet, TextInput, Alert } from 'react-native'
+import React, {useState} from 'react'
+import {esconderTeclado} from '../helpers';
 import useAureos from '../hooks/useAureos'
 
+import axios from 'axios';
+
 const ModalFormulario = ({modal, setModal}) => {
+  const {usuario, token} = useAureos();
+
+  const [nombre, setNombre] = useState('');
+  const [descripcion, setDescripcion] = useState('');
+  const [duracion, setDuracion] = useState(0);
+  const [instrucciones, setInstrucciones] = useState('');
+  const [categoria, setCategoria] = useState('');
+
 
 
   function cerrarModal(){
     setModal(!modal);
   }
 
+  async function crearActividad(){
+    if([nombre, descripcion, instrucciones, categoria].includes('')){
+      Alert.alert('Error', 'Todos los campos son obligatorios');
+      return;
+    }
+    if(duracion <= 0){
+      Alert.alert('Error', 'Duración no válida');
+      return;
+    }
+    try {
+      const config = {
+        headers: {
+          "Content-Type": 'application/json',
+          authorization: `Bearer ${token}`
+        }
+      }
+      const {data} = await axios.post(`${process.env.API_URL}/actividades/crear-actividad`, {nombre, descripcion, instrucciones, categoria, duracion, creadaPor: usuario._id, completadaPor: []}, config);
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
-    <View
+    <Pressable
       style={{flex: 1, backgroundColor: '#f8f8f8', marginHorizontal: '10%', marginVertical: 30}}
+      onPress={ ()=>esconderTeclado() }
     >
       <Modal
         visible={modal}
@@ -60,7 +95,7 @@ const ModalFormulario = ({modal, setModal}) => {
           
         </View>
       </Modal>
-    </View>
+    </Pressable>
   )
 }
 
@@ -94,6 +129,17 @@ const styles = StyleSheet.create({
     color: '#2FB18A',
     fontWeight: '700'
   },
+  campo: {
+    marginVertical: 10
+  },
+  label: {
+    display: 'block'
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#000',
+    padding: 10
+  }
 })
 
 export default ModalFormulario
