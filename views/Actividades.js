@@ -5,9 +5,8 @@ import useAureos from '../hooks/useAureos';
 
 import Navegacion from '../components/Navegacion';
 import Actividad from '../components/Actividad';
+import ModalFormulario from '../components/ModalFormulario';
 import axios from 'axios';
-
-
 
 const PATOLOGIAS = [
   {
@@ -41,7 +40,6 @@ function Actividades({route, navigation}) {
   const {actividades, setActividades, usuario, token, actividadSeleccionada, setActividadSeleccionada} = useAureos();
 
   const [categoria, setCategoria] = useState('todas');
-
 
   useEffect(()=>{
     obtenerActividades();

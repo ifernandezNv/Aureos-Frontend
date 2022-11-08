@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, View, FlatList, Text, Dimensions, Alert, ScrollView } from 'react-native';
+import { StyleSheet, View, FlatList, Text, Dimensions, Alert, ScrollView, Pressable } from 'react-native';
 import {Video} from 'expo-av';
 import {Button} from 'react-native-paper';
 
@@ -10,6 +10,7 @@ import Wave from '../components/Wave';
 import ActividadH from '../components/ActividadH';
 import Usuario from '../components/Usuario';
 import Navegacion from '../components/Navegacion';
+import ModalFormulario from '../components/ModalFormulario';
 import axios from 'axios';
 
 
@@ -18,6 +19,8 @@ function Perfil({navigation}) {
   const [actividades, setActividades] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
   const [cantidadUsuarios, setCantidadUsuarios] = useState(0);
+  const [modal, setModal] = useState(false);
+
 
   useEffect(()=>{
     if(usuario.tipo !== 'usuario'){
@@ -124,6 +127,10 @@ function Perfil({navigation}) {
     Alert.alert('Alerta', '¿Estas segur@ de cerrar sesión?', [{text: 'Si, cerrar sesión', onPress: ()=>eliminarToken()}, {text: 'No, cancelar'} ]);
   }
 
+  function mostrarModal(){
+    setModal(!modal);
+  }
+
   return (
     <View style={styles.contenedor}>
         <Wave customStyles={styles.svgCurve} />
@@ -155,7 +162,14 @@ function Perfil({navigation}) {
               contentContainerStyle={{width: '100%', height: '100%'}}
             >
               <View style={styles.actividades}>
-                {usuario.tipo !== 'usuario' ? <Text style={styles.encabezado}>Actividades <Text style={styles.span}>Creadas</Text></Text> : <Text style={styles.encabezado}>Actividades <Text style={styles.span}>Completadas</Text></Text> }
+                {usuario.tipo !== 'usuario' ? (
+                  <>
+                    <Text style={styles.encabezado}>Actividades <Text style={styles.span}>Creadas</Text></Text>
+                    <Pressable style={styles.botonCrear} onPress={ ()=>mostrarModal() }>
+                      <Text style={styles.botonCrearTexto}>Crear Actividad</Text>
+                    </Pressable>
+                  </>
+                ) : <Text style={styles.encabezado}>Actividades <Text style={styles.span}>Completadas</Text></Text> }
                 {actividades.length === 0 && usuario.tipo !== 'usuario' ? <Text>No haz creado actividades</Text> :(
                   <FlatList
                     data={actividades}
@@ -188,6 +202,10 @@ function Perfil({navigation}) {
               </View>
             </ScrollView>
           </ScrollView>
+          <ModalFormulario
+            modal={modal}
+            setModal={setModal}
+          />
       <Navegacion visible={true} usuario={usuario} token={token}/>
     </View>
   )
@@ -240,6 +258,19 @@ const styles = StyleSheet.create({
       color: '#2FB18A',
       fontWeight: '700'
     },
+    botonCrear: {
+      width: '40%',
+      padding: 10,
+      backgroundColor: '#6DD3B5',
+      borderRadius: 5,
+      marginBottom: 15,
+    },
+    botonCrearTexto:{
+      color: '#fff',
+      fontWeight: '900',
+      textAlign: 'center',
+
+    },  
     card: {
       backgroundColor: '#fff',
       marginHorizontal: 20,
