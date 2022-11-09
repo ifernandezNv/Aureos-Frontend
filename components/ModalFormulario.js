@@ -1,13 +1,13 @@
 import { View, Text, Modal, Pressable, StyleSheet, TextInput, Alert, Keyboard } from 'react-native'
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 
 import useAureos from '../hooks/useAureos'
 import {Picker} from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 
-const ModalFormulario = ({modal, setModal}) => {
-  const {usuario, token} = useAureos();
+const ModalFormulario = () => {
+  const {usuario, token, actividadEditar, setActividadEditar, modal, setModal} = useAureos();
 
   const [titulo, setTitulo] = useState('');
   const [descripcion, setDescripcion] = useState('');
@@ -16,15 +16,38 @@ const ModalFormulario = ({modal, setModal}) => {
   const [identificador, setIdentificador] = useState(Date.now());
   const [categoria, setCategoria] = useState('');
   const [imagen, setImagen] = useState('https://res.cloudinary.com/ds6v7rbvr/image/upload/v1666577364/actividad_hablar_suzjnr.png');
+  const [id, setId] = useState('');
+
   const navigation = useNavigation();
 
+  useEffect(()=>{
+    if(actividadEditar._id){
+      setId(actividadEditar._id);
+      setTitulo(actividadEditar.titulo);
+      setDescripcion(actividadEditar.descripcion);
+      
+      setInstrucciones(actividadEditar.instrucciones);
+      setIdentificador(actividadEditar.identificador);
+      setCategoria(actividadEditar.categoria);
+      setImagen(actividadEditar.imagen);
+      console.log("Editar: ", actividadEditar.duracion);
+      console.log("State: ", duracion);
+    }
+    setDuracion(actividadEditar.duracion ? actividadEditar.duracion : duracion);
+  },[actividadEditar])
 
   function cerrarModal(){
     setModal(!modal);
+    setActividadEditar({});
+    setTitulo('');
+    setDescripcion('');
+    setDuracion(0);
+    setInstrucciones('');
+    setImagen('');
+    setCategoria('');
   }
 
-  async function crearActividad(){
-    console.log(duracion);
+  function handleSubmit(){
     if([titulo, descripcion, instrucciones, categoria, imagen].includes('')){
       Alert.alert('Error', 'Todos los campos son obligatorios');
       return;
@@ -33,6 +56,14 @@ const ModalFormulario = ({modal, setModal}) => {
       Alert.alert('Error', 'Duración no válida');
       return;
     }
+    if(id){
+      editarActividad();
+      return
+    }
+    crearActividad();
+  }
+
+  async function crearActividad(){
     try {
       const config = {
         headers: {
@@ -54,8 +85,36 @@ const ModalFormulario = ({modal, setModal}) => {
         navigation.navigate('Perfil');
       }, 3000);
     } catch (error) {
-      console.log(error.response.data.msg);
+      console.log(error?.response?.data?.msg);
     }
+  }
+
+  async function editarActividad(){
+    const config = {
+      headers: {
+        "Content-Type": 'application/json',
+        authorization: `Bearer ${token}`
+      }
+    }
+    try {
+      const {data} = await axios.put(`${process.env.API_URL}/actividades/editar/${id}`, {titulo, descripcion, duracion, instrucciones, imagen, categoria}, config);
+      console.log(data);
+      Alert.alert(data.msg);
+      setTimeout(() => {
+        setTitulo('');
+        setDescripcion('');
+        setDuracion(0);
+        setInstrucciones('');
+        setImagen('');
+        setCategoria('');
+        setModal(!modal);
+        setActividadEditar({});
+        navigation.navigate('Perfil');
+      }, 3000);
+    } catch (error) {
+      console.log(error.response.data);
+    }
+
   }
 
   function hideKeyboard(){
@@ -97,7 +156,7 @@ const ModalFormulario = ({modal, setModal}) => {
             <Text style={styles.botonCerrarTexto}>X</Text>
           </Pressable>
           <View>
-            <Text style={styles.encabezado}>Crea tus <Text style={styles.span}>Actividades</Text></Text>
+            <Text style={styles.encabezado}>{actividadEditar._id ? 'Edita' : 'Crea'} tus <Text style={styles.span}>{actividadEditar._id ? 'Actividad' : 'Actividades'}</Text></Text>
             <View style={styles.campo}>
               <Text style={styles.label}>Titulo: </Text>
               <TextInput style={styles.input} value={titulo} onChangeText={value=> setTitulo(value)} />
@@ -109,7 +168,7 @@ const ModalFormulario = ({modal, setModal}) => {
 
             <View style={styles.campo}>
               <Text style={styles.label}>Duración (minutos): </Text>
-              <TextInput style={styles.input} keyboardType='number-pad' placeholder='5 (minutos)' value={duracion} onChangeText={value => setDuracion(Number(value))}  />
+              <TextInput style={styles.input} keyboardType='number-pad' placeholder='5 (minutos)' value={Number(duracion)} onChangeText={value => setDuracion(Number(value))}  />
             </View>
 
             <View style={styles.campo}>
@@ -141,9 +200,9 @@ const ModalFormulario = ({modal, setModal}) => {
             </Picker>
 
               <Pressable style={styles.boton}
-                onPress={ ()=>crearActividad() }
+                onPress={ ()=>handleSubmit() }
               >
-                <Text style={styles.botonTexto}>Crear Actividad</Text>
+                <Text style={styles.botonTexto}>{actividadEditar._id ? 'Guardar Cambios' : 'Crear Actividad'}</Text>
               </Pressable>
 
           </View>
@@ -192,7 +251,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: '#000',
+    borderColor: '#e1e1e1',
     color: '#000',
     padding: 10
   },

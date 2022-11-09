@@ -15,12 +15,11 @@ import axios from 'axios';
 
 
 function Perfil({navigation}) {
-  const {usuario, setUsuario, token, setToken} = useAureos();
+  const {usuario, setUsuario, token, setToken, modal, setModal} = useAureos();
   const [actividades, setActividades] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
   const [cantidadUsuarios, setCantidadUsuarios] = useState(0);
-  const [modal, setModal] = useState(false);
-
+  
 
   useEffect(()=>{
     if(usuario.tipo !== 'usuario'){
@@ -202,10 +201,7 @@ function Perfil({navigation}) {
               </View>
             </ScrollView>
           </ScrollView>
-          <ModalFormulario
-            modal={modal}
-            setModal={setModal}
-          />
+          <ModalFormulario/>
       <Navegacion visible={true} usuario={usuario} token={token}/>
     </View>
   )

@@ -1,9 +1,17 @@
 import React, {useState, useEffect} from 'react';
 import { StyleSheet, View, Pressable, Text, Image, ImageBackground } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import useAureos from '../hooks/useAureos';
+import ModalFormulario from './ModalFormulario';
 
 function ActividadH({actividad}) {
-  const {duracion, imagen, titulo, descripcion, categoria} = actividad;
+  const {imagen, titulo} = actividad;
+  const {usuario, token, modal, setModal, setActividadEditar} = useAureos();
+
+  function editarActividad(){
+    setActividadEditar(actividad);
+    console.log(actividad);
+    setModal(!modal);
+  }
   return (
     <View style={styles.card}>
         <ImageBackground
@@ -18,6 +26,13 @@ function ActividadH({actividad}) {
             <View style={styles.contenido}>
                 <Text style={styles.titulo}>{titulo}</Text>
             </View>
+            {usuario.tipo !== 'usuario' && (
+              <>
+                <Pressable style={styles.boton} onPress={ ()=> editarActividad()}>
+                  <Text style={styles.botonTexto}>Editar</Text>
+                </Pressable>
+              </>
+            )}
         </ImageBackground>
     </View>
   )
@@ -32,6 +47,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 10,
         marginBottom: 20,
+        position: 'relative',
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -70,6 +86,8 @@ const styles = StyleSheet.create({
       padding: 10,
       borderRadius: 10,
       width: '50%',
+      position: 'absolute',
+      bottom: 0,
       marginHorizontal: '25%',
       marginBottom: 10,
       alignItems: 'center',
