@@ -30,8 +30,6 @@ const ModalFormulario = () => {
       setIdentificador(actividadEditar.identificador);
       setCategoria(actividadEditar.categoria);
       setImagen(actividadEditar.imagen);
-      console.log("Editar: ", actividadEditar.duracion);
-      console.log("State: ", duracion);
     }
     setDuracion(actividadEditar.duracion ? actividadEditar.duracion : duracion);
   },[actividadEditar])
@@ -72,7 +70,6 @@ const ModalFormulario = () => {
         }
       }
       const {data} = await axios.post(`${process.env.API_URL}/actividades/crear-actividad`, {titulo, descripcion, imagen, instrucciones, categoria, duracion, creadaPor: usuario._id, completadaPor: [], identificador}, config);
-      console.log(data);
       Alert.alert('Actividad creada correctamente');
       setTimeout(() => {
         setTitulo('');
@@ -98,7 +95,6 @@ const ModalFormulario = () => {
     }
     try {
       const {data} = await axios.put(`${process.env.API_URL}/actividades/editar/${id}`, {titulo, descripcion, duracion, instrucciones, imagen, categoria}, config);
-      console.log(data);
       Alert.alert(data.msg);
       setTimeout(() => {
         setTitulo('');
