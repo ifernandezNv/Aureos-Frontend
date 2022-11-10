@@ -62,10 +62,10 @@ function Perfil({navigation}) {
       }
     }
     try {
-      const {data} = await axios.post(`${process.env.API_URL}/actividades/creadas`, {idUsuario: usuario._id.toString()}, config);
+      const {data} = await axios.post(`${process.env.API_URL}/actividades/creadas`, {idUsuario: usuario._id}, config);
       setActividades(data);
     } catch (error) {
-      console.log(error?.response);
+      console.log("Desde actividades creadas error:", error?.response.data.msg);
     }
   }
 
@@ -77,7 +77,6 @@ function Perfil({navigation}) {
       }
     }
     try {
-      console.log(usuario);
       const {data} = await axios(`${process.env.API_URL}/actividades/completadas/${usuario._id}`, config);
       setActividades(data);
     } catch (error) {

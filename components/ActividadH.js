@@ -1,17 +1,47 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, View, Pressable, Text, Image, ImageBackground } from 'react-native';
+import { StyleSheet, View, Pressable, Text, Image, ImageBackground, Alert } from 'react-native';
 import useAureos from '../hooks/useAureos';
-import ModalFormulario from './ModalFormulario';
+import { useNavigation } from '@react-navigation/native';
+
+import {Button} from 'react-native-paper';
+import axios from 'axios';
+
 
 function ActividadH({actividad}) {
   const {imagen, titulo} = actividad;
   const {usuario, token, modal, setModal, setActividadEditar} = useAureos();
 
+  const navigation = useNavigation();
+
   function editarActividad(){
     setActividadEditar(actividad);
-    console.log(actividad);
     setModal(!modal);
   }
+
+  async function eliminarActividad(){
+    const config = {
+      headers: {
+        "Content-Type": 'application/json',
+        authorization: `Bearer ${token}`
+      }
+    }
+    
+    try {
+      const {data} = await axios.post(`${process.env.API_URL}/actividades/borrar/${actividad._id}`, {id: actividad._id}, config);
+      Alert.alert(data.msg);
+      setTimeout(() => {
+        navigation.navigate('Actividades');
+      }, 3000);
+    } catch (error) {
+      console.log(error.response);
+    }
+  }
+
+  function mostrarAlerta(){
+    Alert.alert('¿Estás seguro de eliminar esta actividad?', 'Una actividad eliminada no podrá ser recuperada', [{text: 'Cancelar'}, {text:"Si, eliminar", onPress: ()=>eliminarActividad()}])
+  }
+
+
   return (
     <View style={styles.card}>
         <ImageBackground
@@ -27,11 +57,14 @@ function ActividadH({actividad}) {
                 <Text style={styles.titulo}>{titulo}</Text>
             </View>
             {usuario.tipo !== 'usuario' && (
-              <>
-                <Pressable style={styles.boton} onPress={ ()=> editarActividad()}>
+              <View style={styles.contenedorBotones}>
+                <Button style={[styles.boton, styles.editar]} onPress={ ()=> editarActividad()}>
                   <Text style={styles.botonTexto}>Editar</Text>
-                </Pressable>
-              </>
+                </Button>
+                <Button style={[styles.boton, styles.eliminar]} onPress={ ()=> mostrarAlerta()}>
+                  <Text style={styles.botonTexto}>Eliminar</Text>
+                </Button>
+              </View>
             )}
         </ImageBackground>
     </View>
@@ -81,17 +114,25 @@ const styles = StyleSheet.create({
       fontWeight: '300',
       textAlign: 'justify'
     },
-    boton: {
-      backgroundColor: '#6DD3B5',
-      padding: 10,
-      borderRadius: 10,
-      width: '50%',
+    contenedorBotones: {
+      width: '90%',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginHorizontal: '5%',
       position: 'absolute',
       bottom: 0,
-      marginHorizontal: '25%',
+    },
+    boton: {
+      width: '100%',
       marginBottom: 10,
       alignItems: 'center',
       justifyContent: 'center'
+    },
+    editar: {
+      backgroundColor: '#F1C006'
+    },
+    eliminar: {
+      backgroundColor: '#DE0D0D'
     },
     botonTexto: {
       textAlign: 'center',

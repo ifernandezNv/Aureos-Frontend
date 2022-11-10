@@ -1,5 +1,7 @@
 
 import React, {useState, useEffect, createContext} from 'react';
+import axios from 'axios';
+import {Alert} from 'react-native';
 
 const AureosContext = createContext();
 
@@ -25,7 +27,7 @@ function AureosProvider({children}) {
             actividadEditar,
             setActividadEditar,
             modal,
-            setModal
+            setModal,
         }}
     >
         {children}
