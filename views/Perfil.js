@@ -144,7 +144,7 @@ function Perfil({navigation}) {
           </View>
           <View style={styles.card}>
             <Text style={styles.saludo}>Hola: <Text style={styles.span}>{usuario.nombre}</Text> </Text>
-            <Text>Haz realizado un total de: <Text style={styles.span}>{actividades.length} actividades </Text></Text>
+            <Text>Haz realizado un total de: <Text style={styles.span}>{actividades.length} {actividades.length > 1 ? 'actividades' : 'actividad'}  </Text></Text>
             {actividades.length !== 0 && usuario.tipo !== 'usuario' &&
               <Text>Se han utilizado: <Text style={styles.span}>{cantidadUsuarios} {cantidadUsuarios > 1 ? 'Veces' : 'Vez'}</Text> tus actividades</Text>
             }
@@ -167,7 +167,13 @@ function Perfil({navigation}) {
                       <Text style={styles.botonCrearTexto}>Crear Actividad</Text>
                     </Pressable>
                   </>
-                ) : <Text style={styles.encabezado}>Actividades <Text style={styles.span}>Completadas</Text></Text> }
+                ) : 
+                (
+                  <>
+                    <Text style={styles.encabezado}>Actividades <Text style={styles.span}>Completadas</Text></Text>
+                    {actividades.length === 0 && <Text>No haz completado actividades</Text>}
+                  </>
+                ) }
                 {actividades.length === 0 && usuario.tipo !== 'usuario' ? <Text>No haz creado actividades</Text> :(
                   <FlatList
                     data={actividades}

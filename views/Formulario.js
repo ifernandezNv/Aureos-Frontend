@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { StyleSheet, View, Pressable, Alert, ScrollView } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import axios from 'axios';
 import useAureos from '../hooks/useAureos';
 
@@ -54,9 +54,10 @@ function Formulario({navigation}) {
           }
         }
         const patologia = respuestas.reduce( (total, respuesta) => respuesta.valor + total,  0);
+
         if(patologia > 0){
           const {data} = await axios.post(`${process.env.API_URL}/formulario/enviar-formulario`, {respuestas, patologia: Math.ceil(patologia / 3), idUsuario: usuario._id }, config);
-  
+          
           Alert.alert('Respuestas Registradas Correctamente');
           setTimeout(() => {
             if(patologia === 5){

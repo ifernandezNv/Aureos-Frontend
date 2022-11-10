@@ -5,6 +5,8 @@ import useAureos from '../hooks/useAureos'
 import {Picker} from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import * as ImagePicker from 'expo-image-picker';
+
 
 const ModalFormulario = () => {
   const {usuario, token, actividadEditar, setActividadEditar, modal, setModal} = useAureos();
@@ -43,6 +45,25 @@ const ModalFormulario = () => {
     setInstrucciones('');
     setImagen('');
     setCategoria('');
+  }
+
+  async function subirImagen(){
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+  
+      console.log(result);
+  
+      if (!result.cancelled) {
+        setImagen(result.uri);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   function handleSubmit(){
@@ -174,7 +195,13 @@ const ModalFormulario = () => {
 
             <View style={styles.campo}>
               <Text style={styles.label}>Imagen: </Text>
-              <TextInput style={styles.input} placeholder=''  value={imagen} onChangeText={value=> setImagen(value)} />
+              <Pressable
+                onPress={ ()=> subirImagen()}
+                style={styles.boton}
+              >
+                  <Text style={styles.botonTexto}>Subir Imagen</Text>
+              </Pressable>
+              {/* <TextInput style={styles.input} placeholder=''  value={imagen} onChangeText={value=> setImagen(value)} /> */}
             </View>
 
             <Text style={styles.label}>Categoría: </Text>
@@ -258,12 +285,12 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
 },
-botonTexto: {
-    fontSize: 20,
-    textAlign: 'center',
-    color: '#fff',
-    fontWeight: '900'
-}
+  botonTexto: {
+      fontSize: 20,
+      textAlign: 'center',
+      color: '#fff',
+      fontWeight: '900'
+  }
 })
 
 export default ModalFormulario

@@ -6,7 +6,6 @@ import { useNavigation } from '@react-navigation/native';
 import {Button} from 'react-native-paper';
 import axios from 'axios';
 
-
 function ActividadH({actividad}) {
   const {imagen, titulo} = actividad;
   const {usuario, token, modal, setModal, setActividadEditar} = useAureos();

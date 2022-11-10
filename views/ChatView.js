@@ -39,11 +39,10 @@ function ChatView({route, navigation}) {
           channel.addMembers(['6359c3d768deee0184746172']);
         }
         filtro = {members: {$in : [usuario._id]}};
-        const canalesPertenecienties = await client.queryChannels({members: {$in : [usuario._id]}});
-        console.log(await client.queryChannels(filtro));
-        setCanales(canalesPertenecienties);
+        const canalesPertenecientes = await client.queryChannels({members: {$in : [usuario._id]}});
+        setCanales(canalesPertenecientes);
         await channel.create();
-        console.log(canalesPertenecienties);
+      
         setConectado(true);
         
       } catch (error) {
@@ -60,7 +59,6 @@ function ChatView({route, navigation}) {
 
   async function irAlCanal(canal){
     setCanalSeleccionado(canal);
-    console.log(await canal.queryMembers({}, {}, {}).members);
   }
 
   return (
