@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, View, FlatList, Text, Dimensions, Alert, ScrollView, Pressable } from 'react-native';
+import { StyleSheet, View, FlatList, Text, Dimensions, Alert, ScrollView, Pressable, SafeAreaView } from 'react-native';
 import {Button} from 'react-native-paper';
 
 import useAureos from '../hooks/useAureos';
@@ -18,6 +18,7 @@ function Perfil({navigation}) {
   const [actividades, setActividades] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
   const [cantidadUsuarios, setCantidadUsuarios] = useState(0);
+  const [cargando, setCargando] = useState(false);
   
 
   useEffect(()=>{
@@ -54,6 +55,7 @@ function Perfil({navigation}) {
   },[actividades])
 
   async function obtenerActividadesCreadas(){
+    setCargando(true);
     const config = {
       headers: {
         "Content-Type": 'application/json',
@@ -66,9 +68,11 @@ function Perfil({navigation}) {
     } catch (error) {
       console.log("Desde actividades creadas error:", error?.response.data.msg);
     }
+    setCargando(false);
   }
 
   async function obtenerActividadesCompletadas(){
+    setCargando(true);
     const config={
       headers: {
         "Content-Type": 'application/json',
@@ -81,9 +85,11 @@ function Perfil({navigation}) {
     } catch (error) {
       console.log(error?.response?.data?.msg);
     }
+    setCargando(false);
   }
 
   async function usuariosAll(){
+    setCargando(true);
     const config = {
       headers: {
         "Content-Type": 'application/json',
@@ -92,12 +98,15 @@ function Perfil({navigation}) {
     }
     try {
       const {data} = await axios(`${process.env.API_URL}/usuarios/todos`, config);
-      setUsuarios(data);
+      const usuariosFiltrados = await data.filter(usuarioState => usuarioState._id !== usuario._id);
+      setUsuarios(usuariosFiltrados);
     } catch (error) {
       console.log(error);
     }
+    setCargando(true);
   }
   async function obtenerSoloUsuarios(){
+    setCargando(true);
     const config = {
       headers: {
         "Content-Type": 'application/json',
@@ -106,10 +115,12 @@ function Perfil({navigation}) {
     }
     try {
       const {data} = await axios(`${process.env.API_URL}/usuarios`, config);
-      setUsuarios(data);
+      const usuariosFiltrados = await data.filter(usuarioState => usuarioState._id !== usuario._id);
+      setUsuarios(usuariosFiltrados);
     } catch (error) {
       console.log(error);
     }
+    setCargando(true);
   }
 
   async function eliminarToken(){
@@ -154,8 +165,8 @@ function Perfil({navigation}) {
           <ScrollView
             horizontal={false}
           >
-            <ScrollView
-              horizontal={false}
+            <SafeAreaView
+              // horizontal={false}
               contentContainerStyle={{width: '100%', height: '100%'}}
             >
               <View style={styles.actividades}>
@@ -173,15 +184,17 @@ function Perfil({navigation}) {
                     {actividades.length === 0 && <Text>No haz completado actividades</Text>}
                   </>
                 ) }
-                {actividades.length === 0 && usuario.tipo !== 'usuario' ? <Text>No haz creado actividades</Text> :(
-                  <FlatList
-                    data={actividades}
-                    keyExtractor={ (actividad) => (actividad._id.toString()) }
-                    renderItem={ ({item}) => (
-                      <ActividadH actividad={item}/>
-                    )}
-                    horizontal={true}
-                  />
+                {cargando ? <Text>Cargando....</Text> : (
+                  actividades.length === 0 && usuario.tipo !== 'usuario' ? <Text>No haz creado actividades</Text> :(
+                    <FlatList
+                      data={actividades}
+                      keyExtractor={ (actividad) => (actividad._id.toString()) }
+                      renderItem={ ({item}) => (
+                        <ActividadH actividad={item}/>
+                      )}
+                      horizontal={true}
+                    />
+                  )
                 )}
               </View>
               <View style={{
@@ -192,18 +205,19 @@ function Perfil({navigation}) {
                   <>
                     <Text style={styles.encabezado}>Usuarios <Text style={styles.span}>Registrados</Text></Text>
                     {usuarios.length === 0 ? <Text>Cargando....</Text> :(
-                      <FlatList
-                        data={usuarios}
-                        keyExtractor={ (usuario) => (usuario._id.toString()) }
-                        renderItem={ ({item}) => (
-                          <Usuario usuarioListado={item}/>
-                        )}
-                      />
+                      usuarios.map( usuarioState => <Usuario usuarioState={usuarioState} key={usuario._id}/>)
+                      // <FlatList
+                      //   data={usuarios}
+                      //   keyExtractor={ (usuario) => (usuario._id.toString()) }
+                      //   renderItem={ ({item}) => (
+                      //     <Usuario usuarioListado={item}/>
+                      //   )}
+                      // />
                     )}
                   </>
                 )} 
               </View>
-            </ScrollView>
+            </SafeAreaView>
           </ScrollView>
           <ModalFormulario/>
       <Navegacion visible={true} usuario={usuario} token={token}/>

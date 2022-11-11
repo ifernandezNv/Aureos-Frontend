@@ -4,8 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import useAureos from '../hooks/useAureos';
 import axios from 'axios';
 
-const Usuario = ({usuarioListado}) => {
-    const {nombre, email} = usuarioListado;
+const Usuario = ({usuarioState}) => {
+    const {nombre, email} = usuarioState;
     const {usuario, token} = useAureos();
     const navigation = useNavigation();
     function mostrarAlerta(){
