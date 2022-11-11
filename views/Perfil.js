@@ -206,13 +206,6 @@ function Perfil({navigation}) {
                     <Text style={styles.encabezado}>Usuarios <Text style={styles.span}>Registrados</Text></Text>
                     {usuarios.length === 0 ? <Text>Cargando....</Text> :(
                       usuarios.map( usuarioState => <Usuario usuarioState={usuarioState} key={usuario._id}/>)
-                      // <FlatList
-                      //   data={usuarios}
-                      //   keyExtractor={ (usuario) => (usuario._id.toString()) }
-                      //   renderItem={ ({item}) => (
-                      //     <Usuario usuarioListado={item}/>
-                      //   )}
-                      // />
                     )}
                   </>
                 )} 
