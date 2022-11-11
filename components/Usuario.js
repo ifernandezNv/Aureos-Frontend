@@ -1,11 +1,30 @@
-import { View, Text, StyleSheet, Pressable } from 'react-native'
+import { View, Text, StyleSheet, Pressable, Alert } from 'react-native'
 import React from 'react'
 import useAureos from '../hooks/useAureos';
 import axios from 'axios';
 
 const Usuario = ({usuarioListado}) => {
-    const {nombre, tipo, email} = usuarioListado;
-    const {usuario} = useAureos();
+    const {nombre, email} = usuarioListado;
+    const {usuario, token} = useAureos();
+
+    function mostrarAlerta(){
+        Alert.alert('¿Estás seguro de eliminar este usuario?', 'Un usuario eliminado no podrá ser recuperado', [{text: 'No, Cancelar'}, {text:'Si, eliminar', onPress: ()=>eliminarUsuario()}])
+    }
+
+    async function eliminarUsuario(){
+        const config = {
+            headers: {
+                "Content-Type": 'application/json',
+                authorization: `Bearer ${token}`
+            }
+        }
+        try {
+            const {data} = await axios.delete(`${process.env.API_URL}/usuarios/eliminar/${usuarioListado._id}`, config);
+            console.log(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
     
   return (
     <View style={styles.contenedor}>
@@ -15,12 +34,12 @@ const Usuario = ({usuarioListado}) => {
         </View>
         {usuario.tipo === 'admin' && (
             <View style={styles.contenedorBotones}>
-                <Pressable style={[styles.boton, styles.botonEliminar]}>
+                <Pressable style={[styles.boton, styles.botonEliminar]} onPress={ ()=>mostrarAlerta()}>
                     <Text style={styles.botonTexto}>Eliminar</Text>
                 </Pressable>
-                <Pressable style={[styles.boton, styles.botonEditar]}>
+                {/* <Pressable style={[styles.boton, styles.botonEditar]}>
                     <Text style={styles.botonTexto}>Editar</Text>
-                </Pressable>
+                </Pressable> */}
             </View>
         )}
     </View>
