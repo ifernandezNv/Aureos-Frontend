@@ -47,24 +47,26 @@ const ModalFormulario = () => {
     setCategoria('');
   }
 
-  async function subirImagen(){
-    try {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-  
-      console.log(result);
-  
-      if (!result.cancelled) {
-        setImagen(result.uri);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  // async function subirImagen(){
+  //   const data = new FormData();
+  //   try {
+  //     let result = await ImagePicker.launchImageLibraryAsync({
+  //       mediaTypes: ImagePicker.MediaTypeOptions.All,
+  //       allowsEditing: true,
+  //       aspect: [4, 3],
+  //       quality: 1,
+  //     });
+  //     if (!result.cancelled) {
+  //       const imagenSubida = {...result, "upload_preset": process.env.CLOUDINARY_NAME, "cloud_name": process.env.CLOUDINARY_NAME }
+  //       data.append("file", result);
+  //       data.append("upload_preset", process.env.CLOUDINARY_NAME);
+  //       // data.append("cloud_name", process.env.CLOUDINARY_NAME);
+  //       setImagen(imagenSubida);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 
   function handleSubmit(){
     if([titulo, descripcion, instrucciones, categoria, imagen].includes('')){
@@ -100,7 +102,7 @@ const ModalFormulario = () => {
         setImagen('');
         setCategoria('');
         setModal(!modal);
-        navigation.navigate('Perfil');
+        navigation.navigate('Actividades');
       }, 3000);
     } catch (error) {
       console.log(error?.response?.data?.msg);
@@ -195,13 +197,7 @@ const ModalFormulario = () => {
 
             <View style={styles.campo}>
               <Text style={styles.label}>Imagen: </Text>
-              <Pressable
-                onPress={ ()=> subirImagen()}
-                style={styles.boton}
-              >
-                  <Text style={styles.botonTexto}>Subir Imagen</Text>
-              </Pressable>
-              {/* <TextInput style={styles.input} placeholder=''  value={imagen} onChangeText={value=> setImagen(value)} /> */}
+              <TextInput style={styles.input} value={imagen} onChangeText={value=> setImagen(imagen)} />
             </View>
 
             <Text style={styles.label}>Categoría: </Text>
@@ -214,6 +210,7 @@ const ModalFormulario = () => {
                 height: 120
               }}
             >
+              <Picker.Item label='--- Seleccione ---' value=''/>
               <Picker.Item label='Estrés' value='Estrés'/>
               <Picker.Item label='Ansiedad' value='Ansiedad'/>
               <Picker.Item label='Depresión' value='Depresión'/>
