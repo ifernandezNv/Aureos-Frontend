@@ -199,7 +199,7 @@ function Perfil({navigation}) {
               </View>
               <View style={{
                 marginHorizontal: 20,
-                marginVertical: 30,
+                marginBottom: 20
               }}>
                 {usuario.tipo !== 'usuario' && (
                   <>
