@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import { StyleSheet, View, FlatList, Text, Dimensions, Alert, ScrollView, Pressable } from 'react-native';
-import {Video} from 'expo-av';
 import {Button} from 'react-native-paper';
 
 import useAureos from '../hooks/useAureos';

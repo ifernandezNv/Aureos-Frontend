@@ -1,12 +1,13 @@
 import { View, Text, StyleSheet, Pressable, Alert } from 'react-native'
 import React from 'react'
+import { useNavigation } from '@react-navigation/native';
 import useAureos from '../hooks/useAureos';
 import axios from 'axios';
 
 const Usuario = ({usuarioListado}) => {
     const {nombre, email} = usuarioListado;
     const {usuario, token} = useAureos();
-
+    const navigation = useNavigation();
     function mostrarAlerta(){
         Alert.alert('¿Estás seguro de eliminar este usuario?', 'Un usuario eliminado no podrá ser recuperado', [{text: 'No, Cancelar'}, {text:'Si, eliminar', onPress: ()=>eliminarUsuario()}])
     }
@@ -20,7 +21,10 @@ const Usuario = ({usuarioListado}) => {
         }
         try {
             const {data} = await axios.delete(`${process.env.API_URL}/usuarios/eliminar/${usuarioListado._id}`, config);
-            console.log(data);
+            Alert.alert(data.msg);
+            setTimeout(() => {
+                navigation.navigate('Actividades');
+            }, 3000);
         } catch (error) {
             console.log(error);
         }
