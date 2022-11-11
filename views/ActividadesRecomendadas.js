@@ -37,6 +37,7 @@ function ActividadesRecomendadas({route, navigation}) {
   const {usuario, token} = useAureos();
   const [actividades, setActividades] = useState([]);
   const [patologia, setPatologia] = useState({});
+  const [cargando, setCargando] = useState(false);
 
   useEffect(()=>{
     if(!patologia.nombre){
@@ -52,6 +53,7 @@ function ActividadesRecomendadas({route, navigation}) {
 
 
   async function obtenerActividades(){
+    setCargando(true);
     if(token){
       const config = {
         headers: {
@@ -70,13 +72,14 @@ function ActividadesRecomendadas({route, navigation}) {
           // }, 2000);
         }
       } catch (error) {
-        console.log(error);
         console.log("Error jejeje: ",error?.response?.data?.msg);
       }
     }
+    setCargando(false);
   }
   
   async function buscarRespuestas(){
+    setCargando(true);
     const config = {
       headers: {
         "Content-Type": 'application/json',
@@ -89,6 +92,7 @@ function ActividadesRecomendadas({route, navigation}) {
     } catch (error) {
       console.log("Error jejeje: ", error.response.data.msg);
     }
+    setCargando(false);
   }
 
 
@@ -99,15 +103,17 @@ function ActividadesRecomendadas({route, navigation}) {
           <Text style={styles.headerHeading}>Actividades</Text>
         </View>
         <Text style={styles.encabezado}>Actividades <Text style={styles.span}>Recomendadas</Text></Text>
-        <View style={styles.actividades}>
-            <FlatList
-              data={actividades}
-              keyExtractor={ (actividad) => (actividad._id.toString()) }
-              renderItem={ ({item}) => (
-                <Actividad actividad={item}/>
-              )}
-            />
-          </View>
+        {cargando ? <Text style={{marginLeft: 20}}>Cargando....</Text> : (
+          <View style={styles.actividades}>
+              <FlatList
+                data={actividades}
+                keyExtractor={ (actividad) => (actividad._id.toString()) }
+                renderItem={ ({item}) => (
+                  <Actividad actividad={item}/>
+                )}
+              />
+            </View>
+          )}
       </View>
       <Navegacion visible={true}/>
     </>
@@ -142,8 +148,9 @@ const styles = StyleSheet.create({
     color: '#2FB18A'
   },
   actividades:{
+    flex: 1,
     marginHorizontal: 20,
-    height: '100%',
+    marginBottom: 50
   }
 });
 export default ActividadesRecomendadas
