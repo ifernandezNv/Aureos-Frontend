@@ -154,7 +154,7 @@ function Perfil({navigation}) {
           </View>
           <View style={styles.card}>
             <Text style={styles.saludo}>Hola: <Text style={styles.span}>{usuario.nombre}</Text> </Text>
-            <Text>Haz realizado un total de: <Text style={styles.span}>{actividades.length} {actividades.length > 1 ? 'actividades' : 'actividad'}  </Text></Text>
+            <Text>Haz {usuario.tipo !== 'usuario' ? 'creado' : 'realizado'} un total de: <Text style={styles.span}>{actividades.length} {actividades.length > 1 ? 'actividades' : 'actividad'}  </Text></Text>
             {actividades.length !== 0 && usuario.tipo !== 'usuario' &&
               <Text>Se han utilizado: <Text style={styles.span}>{cantidadUsuarios} {cantidadUsuarios > 1 ? 'Veces' : 'Vez'}</Text> tus actividades</Text>
             }
