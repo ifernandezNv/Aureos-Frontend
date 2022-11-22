@@ -16,9 +16,9 @@ function ChatView({route, navigation}) {
   const [conectado, setConectado] = useState(false);
   const [canalSeleccionado, setCanalSeleccionado] = useState({});
   const [canales, setCanales] = useState([]);
-  // const [filtro, setFiltro] = useState({});
+  const [filtro, setFiltro] = useState({member_count: { $eq: 2 }});
   const [paciente, setPaciente] = useState('')
-  let filtro = {};
+  // let filtro = {};
   let channel = '';
 
 
@@ -38,7 +38,7 @@ function ChatView({route, navigation}) {
         if(usuario.tipo === 'usuario'){
           channel.addMembers(['6359c3d768deee0184746172']);
         }
-        filtro = {members: {$in : [usuario._id]}};
+        // filtro = {members: {$in : [usuario._id]}};
         const canalesPertenecientes = await client.queryChannels({members: {$in : [usuario._id]}});
         setCanales(canalesPertenecientes);
         await channel.create();

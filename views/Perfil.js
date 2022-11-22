@@ -124,11 +124,14 @@ function Perfil({navigation}) {
   }
 
   async function eliminarToken(){
-    Alert.alert('Sesión cerrada correctamente');
     await AsyncStorage.removeItem('token');
     setUsuario({});
     setToken('');
-    navigation.navigate('Inicio');
+    setActividades([]);
+    setTimeout(() => {
+      navigation.navigate('Inicio');
+      Alert.alert('Sesión cerrada correctamente');
+    }, 2000);
   }
 
   function cerrarSesion(){
