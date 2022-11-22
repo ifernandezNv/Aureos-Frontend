@@ -11,14 +11,10 @@ import Navegacion from '../components/Navegacion';
 
 const client = StreamChat.getInstance(process.env.STREAM_KEY);
 
-function ChatView({route, navigation}) {
+function ChatView() {
   const {usuario, token} = useAureos();
   const [conectado, setConectado] = useState(false);
   const [canalSeleccionado, setCanalSeleccionado] = useState({});
-  const [canales, setCanales] = useState([]);
-  const [filtro, setFiltro] = useState({member_count: { $eq: 2 }});
-  const [paciente, setPaciente] = useState('')
-  // let filtro = {};
   let channel = '';
 
 
@@ -38,9 +34,6 @@ function ChatView({route, navigation}) {
         if(usuario.tipo === 'usuario'){
           channel.addMembers(['6359c3d768deee0184746172']);
         }
-        // filtro = {members: {$in : [usuario._id]}};
-        const canalesPertenecientes = await client.queryChannels({members: {$in : [usuario._id]}});
-        setCanales(canalesPertenecientes);
         await channel.create();
       
         setConectado(true);
@@ -92,7 +85,7 @@ function ChatView({route, navigation}) {
                 <View style={styles.tituloChatlist}>
                   <Text style={styles.headingList}>Chats a los que perteneces</Text>
                 </View>
-                <ChannelList filters={filtro}  onSelect={irAlCanal}/>
+                <ChannelList onSelect={irAlCanal}/>
                 <Navegacion visible={true} usuario={usuario} token={token}/>
               </>
             }
