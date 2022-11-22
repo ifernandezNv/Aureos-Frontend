@@ -92,7 +92,7 @@ function ChatView({route, navigation}) {
                 <View style={styles.tituloChatlist}>
                   <Text style={styles.headingList}>Chats a los que perteneces</Text>
                 </View>
-                <ChannelList  onSelect={irAlCanal}/>
+                <ChannelList filters={filtro}  onSelect={irAlCanal}/>
                 <Navegacion visible={true} usuario={usuario} token={token}/>
               </>
             }
