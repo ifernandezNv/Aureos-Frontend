@@ -6,7 +6,7 @@ import {Picker} from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
-
+import * as Permissions from 'expo-permissions'; 
 
 const ModalFormulario = () => {
   const {usuario, token, actividadEditar, setActividadEditar, modal, setModal} = useAureos();
@@ -47,28 +47,41 @@ const ModalFormulario = () => {
     setCategoria('');
   }
 
-  // async function subirImagen(){
-  //   const data = new FormData();
-  //   try {
-  //     let result = await ImagePicker.launchImageLibraryAsync({
-  //       mediaTypes: ImagePicker.MediaTypeOptions.All,
-  //       allowsEditing: true,
-  //       aspect: [4, 3],
-  //       quality: 1,
-  //     });
-  //     if (!result.cancelled) {
-  //       const imagenSubida = {...result, "upload_preset": process.env.CLOUDINARY_NAME, "cloud_name": process.env.CLOUDINARY_NAME }
-  //       data.append("file", result);
-  //       data.append("upload_preset", process.env.CLOUDINARY_NAME);
-  //       // data.append("cloud_name", process.env.CLOUDINARY_NAME);
-  //       setImagen(imagenSubida);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
+  async function subirImagen(){
+    const data = new FormData();
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.5,
+      });
+      if (!result.cancelled) {
+        let imagenSubida = {
+          uri: result.uri,
+          type: `imagen`,
+          name: `actividad_${titulo}`,
+        }
+        // setImagen(imagenSubida);
+        handleImagen(imagenSubida);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function handleImagen(imagenSubida){
+    const data = new FormData();
+      data.append("file", imagenSubida);
+      data.append("upload_preset", "aureos");
+      data.append("cloud_name", process.env.CLOUDINARY_NAME);
+      fetch(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_NAME}/image/upload`, { method:'POST', body: data })
+        .then(res=>res.json())
+        .then(data=>{ console.log("Subida de imagen: ", data); setImagen(data.url); });
+  }
 
   function handleSubmit(){
+    
     if([titulo, descripcion, instrucciones, categoria, imagen].includes('')){
       Alert.alert('Error', 'Todos los campos son obligatorios');
       return;
@@ -148,8 +161,6 @@ const ModalFormulario = () => {
         visible={modal}
         transparent={false}
         animationType='slide'
-        // presentationStyle='formSheet'
-        
       >
         <Pressable
           onPress={ ()=>hideKeyboard() }
@@ -197,7 +208,9 @@ const ModalFormulario = () => {
 
             <View style={styles.campo}>
               <Text style={styles.label}>Imagen: </Text>
-              <TextInput style={styles.input} value={imagen} onChangeText={value=> setImagen(imagen)} />
+              <Pressable onPress={ ()=>subirImagen()}>
+                  <Text>Subir Imagen</Text>
+              </Pressable>
             </View>
 
             <Text style={styles.label}>Categoría: </Text>
