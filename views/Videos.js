@@ -1,26 +1,34 @@
 import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
 import {Button} from 'react-native-paper';
 import Navegacion from '../components/Navegacion';
+import useAureos from '../hooks/useAureos';
 
 const Videos = ({navigation}) => {
-
+    const {actividadesRecomendadas, setActividadesRecomendadas} = useAureos();
     function volver(){
         navigation.goBack();
     }
   return (
     <View style={styles.contenedor}>
-        <Image
-            style={{
-                width: 250,
-                height: 200,
-            }}
-            source={{uri: 'https://www.intuitiveaccountant.com/downloads/9043/download/working-on-it.png?cb=287a36a90eae40f6bf55da1fddea7c1e'}}
-        />
-      <Text>Heeey, Aún no hay videos disponibles de esta categoría</Text>
-      <Text>Seguimos trabajando en eso!!!</Text>
-      <Pressable onPress={ ()=> volver()}
-        style={styles.boton}
-      ><Text style={styles.botonTexto}>Volver</Text></Pressable>
+        {actividadesRecomendadas.length > 0 && actividadesRecomendadas.map(actividad => actividad.contenido !== '' ? actividad : null)? <Text>hola</Text> : (
+            <>
+            <Image
+                style={{
+                    width: 250,
+                    height: 200,
+                }}
+                source={{uri: 'https://www.intuitiveaccountant.com/downloads/9043/download/working-on-it.png?cb=287a36a90eae40f6bf55da1fddea7c1e'}}
+            />
+                <Text>Heeey, Aún no hay videos disponibles de esta categoría</Text>
+                <Text>Seguimos trabajando en eso!!!</Text>
+                <Pressable onPress={ ()=> volver()}
+                    style={styles.boton}
+                >
+                    <Text style={styles.botonTexto}>Volver</Text>
+                </Pressable>
+            </>
+        )}
+        
       <Navegacion visible={true}/>
     </View>
   )

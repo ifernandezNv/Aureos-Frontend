@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useMemo} from 'react';
+import React, {useState, useEffect} from 'react';
 import { StyleSheet, View, FlatList, Text, Alert } from 'react-native';
 import Actividad from '../components/Actividad';
 import axios from 'axios';
@@ -32,9 +32,9 @@ const PATOLOGIAS = [
   }
 ]
 
-function ActividadesRecomendadas({route, navigation}) {
+function ActividadesRecomendadas({navigation}) {
 
-  const {usuario, token} = useAureos();
+  const {usuario, token, setActividadesRecomendadas} = useAureos();
   const [actividades, setActividades] = useState([]);
   const [patologia, setPatologia] = useState({});
   const [cargando, setCargando] = useState(false);
@@ -65,6 +65,7 @@ function ActividadesRecomendadas({route, navigation}) {
         const {data} = await axios.post(`${process.env.API_URL}/actividades`, {categoria: patologia.nombre} , config);
         const bandera = await data;
         setActividades(data);
+        setActividadesRecomendadas(data);
         if(bandera.length === 0){
           Alert.alert('Alerta', 'No hay actividades para mostrarte');
           setTimeout(() => {
