@@ -169,7 +169,6 @@ function Perfil({navigation}) {
             horizontal={false}
           >
             <SafeAreaView
-              // horizontal={false}
               contentContainerStyle={{width: '100%', height: '100%'}}
             >
               <View style={styles.actividades}>

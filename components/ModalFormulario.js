@@ -210,6 +210,7 @@ const ModalFormulario = () => {
               <Text style={styles.label}>Imagen: </Text>
               <Pressable onPress={ ()=>subirImagen()}>
                   <Text>Subir Imagen</Text>
+                  {imagen.url && (<Text>Url de la imagen{imagen}</Text>)}
               </Pressable>
             </View>
 
