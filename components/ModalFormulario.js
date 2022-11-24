@@ -1,4 +1,4 @@
-import { View, Text, Modal, Pressable, StyleSheet, TextInput, Alert, Keyboard } from 'react-native'
+import { View, Text, Modal, Pressable, StyleSheet, TextInput, Alert, Keyboard, ScrollView } from 'react-native'
 import React, {useState, useEffect} from 'react'
 
 import useAureos from '../hooks/useAureos'
@@ -6,7 +6,6 @@ import {Picker} from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
-import * as Permissions from 'expo-permissions'; 
 
 const ModalFormulario = () => {
   const {usuario, token, actividadEditar, setActividadEditar, modal, setModal} = useAureos();
@@ -18,6 +17,7 @@ const ModalFormulario = () => {
   const [identificador, setIdentificador] = useState(Date.now());
   const [categoria, setCategoria] = useState('');
   const [imagen, setImagen] = useState('https://res.cloudinary.com/ds6v7rbvr/image/upload/v1666577364/actividad_hablar_suzjnr.png');
+  const [contenido, setContenido] = useState('');
   const [id, setId] = useState('');
 
   const navigation = useNavigation();
@@ -45,10 +45,10 @@ const ModalFormulario = () => {
     setInstrucciones('');
     setImagen('');
     setCategoria('');
+    setContenido('');
   }
 
   async function subirImagen(){
-    const data = new FormData();
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -62,8 +62,29 @@ const ModalFormulario = () => {
           type: `imagen`,
           name: `actividad_${titulo}`,
         }
-        // setImagen(imagenSubida);
         handleImagen(imagenSubida);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function subirContenido(){
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1.0,
+      });
+      if (!result.cancelled) {
+        let contenidoSubido = {
+          uri: result.uri,
+          type: `imagen` || 'video',
+          name: `video_${titulo}`,
+          
+        }
+        handleVideo(contenidoSubido);
       }
     } catch (error) {
       console.log(error);
@@ -78,6 +99,16 @@ const ModalFormulario = () => {
       fetch(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_NAME}/image/upload`, { method:'POST', body: data })
         .then(res=>res.json())
         .then(data=>{ console.log("Subida de imagen: ", data); setImagen(data.url); });
+  }
+  
+  function handleVideo(videoSubido){
+    const data = new FormData();
+      data.append("file", videoSubido);
+      data.append("upload_preset", "aureos");
+      data.append("cloud_name", process.env.CLOUDINARY_NAME);
+      fetch(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_NAME}/video/upload`, { method:'POST', body: data })
+        .then(res=>res.json())
+        .then(data=>{ console.log("Subida de contenido: ", data); setContenido(data.url); });
   }
 
   function handleSubmit(){
@@ -105,7 +136,7 @@ const ModalFormulario = () => {
           authorization: `Bearer ${token}`
         }
       }
-      const {data} = await axios.post(`${process.env.API_URL}/actividades/crear-actividad`, {titulo, descripcion, imagen, instrucciones, categoria, duracion, creadaPor: usuario._id, completadaPor: [], identificador}, config);
+      const {data} = await axios.post(`${process.env.API_URL}/actividades/crear-actividad`, {titulo, descripcion, imagen, instrucciones, categoria, duracion, creadaPor: usuario._id, completadaPor: [], identificador, contenido}, config);
       Alert.alert('Actividad creada correctamente');
       setTimeout(() => {
         setTitulo('');
@@ -182,66 +213,75 @@ const ModalFormulario = () => {
             elevation: 8,
           }}
         >
-          <Pressable onPress={ ()=>cerrarModal()} style={styles.botonCerrar}>
-            <Text style={styles.botonCerrarTexto}>X</Text>
-          </Pressable>
-          <View>
-            <Text style={styles.encabezado}>{actividadEditar._id ? 'Edita' : 'Crea'} tus <Text style={styles.span}>{actividadEditar._id ? 'Actividad' : 'Actividades'}</Text></Text>
-            <View style={styles.campo}>
-              <Text style={styles.label}>Titulo: </Text>
-              <TextInput style={styles.input} value={titulo} onChangeText={value=> setTitulo(value)} />
-            </View>
-            <View style={styles.campo}>
-              <Text style={styles.label}>Descripcion: </Text>
-              <TextInput style={styles.input} value={descripcion} onChangeText={value=> setDescripcion(value)}  />
-            </View>
+          <ScrollView>
+            <Pressable onPress={ ()=>cerrarModal()} style={styles.botonCerrar}>
+              <Text style={styles.botonCerrarTexto}>X</Text>
+            </Pressable>
+            <View>
+              <Text style={styles.encabezado}>{actividadEditar._id ? 'Edita' : 'Crea'} tus <Text style={styles.span}>{actividadEditar._id ? 'Actividad' : 'Actividades'}</Text></Text>
+              <View style={styles.campo}>
+                <Text style={styles.label}>Titulo: </Text>
+                <TextInput style={styles.input} value={titulo} onChangeText={value=> setTitulo(value)} />
+              </View>
+              <View style={styles.campo}>
+                <Text style={styles.label}>Descripcion: </Text>
+                <TextInput style={styles.input} value={descripcion} onChangeText={value=> setDescripcion(value)}  />
+              </View>
 
-            <View style={styles.campo}>
-              <Text style={styles.label}>Duración (minutos): </Text>
-              <TextInput style={styles.input} keyboardType='number-pad' placeholder='5 (minutos)' value={Number(duracion)} onChangeText={value => setDuracion(Number(value))}  />
-            </View>
+              <View style={styles.campo}>
+                <Text style={styles.label}>Duración (minutos): </Text>
+                <TextInput style={styles.input} keyboardType='number-pad' placeholder='5 (minutos)' value={Number(duracion)} onChangeText={value => setDuracion(Number(value))}  />
+              </View>
 
-            <View style={styles.campo}>
-              <Text style={styles.label}>Instrucciones: </Text>
-              <TextInput style={styles.input} placeholder='Pasos a seguir para completar la actividad' value={instrucciones} onChangeText={value=> setInstrucciones(value)}  />
-            </View>
+              <View style={styles.campo}>
+                <Text style={styles.label}>Instrucciones: </Text>
+                <TextInput style={styles.input} placeholder='Pasos a seguir para completar la actividad' value={instrucciones} onChangeText={value=> setInstrucciones(value)}  />
+              </View>
 
-            <View style={styles.campo}>
-              <Text style={styles.label}>Imagen: </Text>
-              <Pressable onPress={ ()=>subirImagen()} style={styles.botonImagen}>
-                  <Text style={styles.botonTexto}>Subir Imagen</Text>
-                  {imagen.url && (<Text>Url de la imagen{imagen}</Text>)}
-              </Pressable>
-            </View>
+              <View style={styles.campo}>
+                <Text style={styles.label}>Imagen: </Text>
+                <Pressable onPress={ ()=>subirImagen()} style={styles.botonImagen}>
+                    <Text style={styles.botonTexto}>Subir Imagen</Text>
+                    {imagen.url && (<Text>Url de la imagen{imagen}</Text>)}
+                </Pressable>
+              </View>
 
-            <Text style={styles.label}>Categoría: </Text>
-            <Picker selectedValue={categoria}
-              onValueChange={(value)=>setCategoria(value)}
+              <View style={styles.campo}>
+                <Text style={styles.label}>Contenido Multimedia: </Text>
+                <Pressable onPress={ ()=>subirContenido()} style={styles.botonImagen}>
+                    <Text style={styles.botonTexto}>Subir Contenido</Text>
+                    {imagen.url && (<Text>Url del contenido{contenido.url}</Text>)}
+                </Pressable>
+              </View>
 
-              itemStyle={{
-                marginVertical: 0,
-                padding: 0,
-                height: 120
-              }}
-            >
-              <Picker.Item label='--- Seleccione ---' value=''/>
-              <Picker.Item label='Estrés' value='Estrés'/>
-              <Picker.Item label='Ansiedad' value='Ansiedad'/>
-              <Picker.Item label='Depresión' value='Depresión'/>
-              <Picker.Item label='Problemas de Autoestima' value='Problemas de Autoestima'/>
-              <Picker.Item label='Pérdida del sentido de la vida' value='Pérdida del sentido de la vida'/>
-              <Picker.Item label='Relaciones' value='Relaciones'/>
-            </Picker>
+              <Text style={styles.label}>Categoría: </Text>
+              <Picker selectedValue={categoria}
+                onValueChange={(value)=>setCategoria(value)}
 
-              <Pressable style={styles.boton}
-                onPress={ ()=>handleSubmit() }
+                itemStyle={{
+                  marginVertical: 0,
+                  padding: 0,
+                  height: 120
+                }}
               >
-                <Text style={styles.botonTexto}>{actividadEditar._id ? 'Guardar Cambios' : 'Crear Actividad'}</Text>
-              </Pressable>
+                <Picker.Item label='--- Seleccione ---' value=''/>
+                <Picker.Item label='Estrés' value='Estrés'/>
+                <Picker.Item label='Ansiedad' value='Ansiedad'/>
+                <Picker.Item label='Depresión' value='Depresión'/>
+                <Picker.Item label='Problemas de Autoestima' value='Problemas de Autoestima'/>
+                <Picker.Item label='Pérdida del sentido de la vida' value='Pérdida del sentido de la vida'/>
+                <Picker.Item label='Relaciones' value='Relaciones'/>
+              </Picker>
 
-          </View>
-          
-        </Pressable>
+                <Pressable style={styles.boton}
+                  onPress={ ()=>handleSubmit() }
+                >
+                  <Text style={styles.botonTexto}>{actividadEditar._id ? 'Guardar Cambios' : 'Crear Actividad'}</Text>
+                </Pressable>
+
+            </View>
+            </ScrollView>
+          </Pressable>
       </Modal>
     </Pressable>
   )
@@ -298,8 +338,10 @@ const styles = StyleSheet.create({
   },
   botonImagen:{
     padding: 10,
-    backgroundColor: '#6DD3B5',
-    
+    backgroundColor: '#2FB18A',
+    borderRadius: 10,
+    marginVertical: 10,
+    marginHorizontal: 10
   },
   botonTexto: {
       fontSize: 20,
