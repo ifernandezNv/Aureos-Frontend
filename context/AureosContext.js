@@ -14,6 +14,7 @@ function AureosProvider({children}) {
     const [actividadSeleccionada, setActividadSeleccionada] = useState([]);
     const [actividadEditar, setActividadEditar] = useState({});
     const [modal, setModal] = useState(false);
+    const [patologia, setPatologia] = useState({});
   return (
     <AureosContext.Provider
         value={{
@@ -30,7 +31,9 @@ function AureosProvider({children}) {
             actividadEditar,
             setActividadEditar,
             modal,
-            setModal,            
+            setModal,  
+            patologia, 
+            setPatologia          
         }}
     >
         {children}

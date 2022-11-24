@@ -34,9 +34,9 @@ const PATOLOGIAS = [
 
 function ActividadesRecomendadas({navigation}) {
 
-  const {usuario, token, setActividadesRecomendadas} = useAureos();
+  const {usuario, token, setActividadesRecomendadas, patologia, setPatologia} = useAureos();
   const [actividades, setActividades] = useState([]);
-  const [patologia, setPatologia] = useState({});
+  
   const [cargando, setCargando] = useState(false);
 
   useEffect(()=>{

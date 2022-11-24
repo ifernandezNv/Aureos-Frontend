@@ -1,16 +1,84 @@
-import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
+import {useState, useEffect} from 'react';
+import { View, Text, StyleSheet, Pressable, Image, Alert } from 'react-native';
 import {Button} from 'react-native-paper';
 import Navegacion from '../components/Navegacion';
 import useAureos from '../hooks/useAureos';
+import axios from 'axios';
+
+const PATOLOGIAS = [
+    {
+      id: 1,
+      nombre: 'Ansiedad',
+    },
+    {
+      id: 2,
+      nombre: 'Depresión',
+    },
+    {
+      id: 3,
+      nombre: 'Estrés',
+    },
+    {
+      id: 4,
+      nombre: 'Problemas de autoestima',
+    },
+    {
+      id: 5,
+      nombre: 'Perdida de sentido de la vida',
+    },
+    {
+      id: 6,
+      nombre: 'Relaciones',
+    }
+]
 
 const Videos = ({navigation}) => {
-    const {actividadesRecomendadas, setActividadesRecomendadas} = useAureos();
+    const {actividadesRecomendadas, setActividadesRecomendadas, patologia, token, usuario} = useAureos();
+    const [actividades, setActividades] = useState([]);
+    const [videos, setVideos] = useState([]);
+    const [cargando, setCargando] = useState(false);
+
+    useEffect(()=>{
+        if(!patologia.nombre || actividades.length === 0){
+            obtenerActividades();
+        }
+    },[])
+    useEffect(()=>{
+        if(actividades.length){
+            const actividadesVideo = actividades.map(actividad => actividad.contenido ? actividad : null);
+            setActividades(actividadesVideo);
+        }
+
+    },[])
+
+
+    async function obtenerActividades(){
+        setCargando(true);
+        if(token){
+          const config = {
+            headers: {
+              "Content-Type": 'application/json',
+              authorization: `Bearer ${token}`
+            }
+          }
+          try {
+            const {data} = await axios.post(`${process.env.API_URL}/actividades`, {categoria: patologia.nombre} , config);
+            const bandera = await data;
+            setActividades(data);
+          } catch (error) {
+            console.log(error);
+            console.log("Error jejeje: ", error?.response?.data?.msg);
+          }
+        }
+        setCargando(false);
+    }
+
     function volver(){
         navigation.goBack();
     }
   return (
     <View style={styles.contenedor}>
-        {actividadesRecomendadas.length > 0 && actividadesRecomendadas.map(actividad => actividad.contenido !== '' ? actividad : null)? <Text>hola</Text> : (
+        {actividades.length > 0 ? <Text>hola</Text> : (
             <>
             <Image
                 style={{
