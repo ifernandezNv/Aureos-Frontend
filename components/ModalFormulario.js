@@ -208,8 +208,8 @@ const ModalFormulario = () => {
 
             <View style={styles.campo}>
               <Text style={styles.label}>Imagen: </Text>
-              <Pressable onPress={ ()=>subirImagen()}>
-                  <Text>Subir Imagen</Text>
+              <Pressable onPress={ ()=>subirImagen()} style={styles.botonImagen}>
+                  <Text style={styles.botonTexto}>Subir Imagen</Text>
                   {imagen.url && (<Text>Url de la imagen{imagen}</Text>)}
               </Pressable>
             </View>
@@ -295,7 +295,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#6DD3B5',
     padding: 10,
     borderRadius: 10,
-},
+  },
+  botonImagen:{
+    padding: 10,
+    backgroundColor: '#6DD3B5',
+    
+  },
   botonTexto: {
       fontSize: 20,
       textAlign: 'center',
