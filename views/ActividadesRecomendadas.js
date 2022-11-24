@@ -67,9 +67,9 @@ function ActividadesRecomendadas({route, navigation}) {
         setActividades(data);
         if(bandera.length === 0){
           Alert.alert('Alerta', 'No hay actividades para mostrarte');
-          // setTimeout(() => {
-          //   navigation.goBack();
-          // }, 2000);
+          setTimeout(() => {
+            navigation.goBack();
+          }, 2000);
         }
       } catch (error) {
         console.log("Error jejeje: ",error?.response?.data?.msg);
@@ -122,8 +122,6 @@ function ActividadesRecomendadas({route, navigation}) {
 const styles = StyleSheet.create({
   contenedor: {
     flex: 1,
-    // marginVertical: 5,
-    // marginHorizontal: 20
   },
   header: {
     paddingTop: 20,
