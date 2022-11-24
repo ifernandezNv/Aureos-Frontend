@@ -1,8 +1,10 @@
-import { View, Text, StyleSheet, Image, Platform, Pressable, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, Pressable, Alert } from 'react-native';
 import {Button} from 'react-native-paper';
 import { useEffect } from 'react';
 import useAureos from '../hooks/useAureos';
 import Navegacion from '../components/Navegacion';
+import {Video} from 'expo-av';
+
 import axios from 'axios';
 
 const VerActividad = ({navigation, route}) => {
@@ -30,7 +32,7 @@ const VerActividad = ({navigation, route}) => {
             }
         }
     },[])
-    const {categoria, descripcion, instrucciones, titulo, imagen, duracion, _id} = actividadSeleccionada;
+    const {_id} = actividadSeleccionada;
     
     function volver(){
         navigation.goBack();
@@ -57,7 +59,7 @@ const VerActividad = ({navigation, route}) => {
   return (
     <>
         <Button onPress={()=>volver()} style={styles.botonVolver} icon='arrow-left'>Volver</Button>
-        <View style={styles.contenedor}>
+        <ScrollView style={styles.contenedor}>
             <View style={styles.actividad}>
                 <Image
                     source={{uri : actividadSeleccionada.imagen}}
@@ -69,6 +71,20 @@ const VerActividad = ({navigation, route}) => {
                     <Text>{actividadSeleccionada.descripcion}</Text>
                     <Text>{actividadSeleccionada.instrucciones}</Text>
                 </View>
+                {actividadSeleccionada.contenido && (
+                    <View style={styles.contenedorVideo}>
+                        <Video
+                            ref={null}
+                            source={{
+                                uri: actividadSeleccionada.contenido
+                            }}
+                            useNativeControls
+                            style={styles.video}
+                        >
+
+                        </Video>
+                    </View>
+                )}
                 {actividadSeleccionada.completadaPor.includes(usuario._id) ? (
                     <Pressable style={styles.botonDisabled}>
                         <Text style={styles.botonTexto}> Actividad Completada</Text>
@@ -79,7 +95,7 @@ const VerActividad = ({navigation, route}) => {
                     </Pressable>
                 )}
             </View>
-        </View>
+        </ScrollView>
         <Navegacion visible={true}/>
     </>
   )
@@ -93,6 +109,7 @@ const styles = StyleSheet.create({
     contenedor: {
         flex: 1,
         backgroundColor: '#fff',
+        paddingBottom: 500
     },
     actividad: {
         flex: 1,
@@ -105,6 +122,15 @@ const styles = StyleSheet.create({
     contenido: {
         paddingHorizontal: 30,
         paddingVertical: 20,
+    },
+    contenedorVideo:{
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginBottom: 20
+    },
+    video: {
+        height: 200,
+        width: 200,
     },
     botonDisabled: {
         width: '70%',
@@ -119,6 +145,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#6DD3B5',
         padding: 10,
         borderRadius: 10,
+        marginBottom: 100
     },
     botonTexto: {
         fontSize: 20,
