@@ -240,6 +240,7 @@ const ModalFormulario = () => {
 
               <View style={styles.campo}>
                 <Text style={styles.label}>Imagen: </Text>
+                <Text>{imagen.length ? `Link de la imagen: ${imagen}`  : 'Aquí se mostrará la url de la imagen una vez se haya subido'}</Text>
                 <Pressable onPress={ ()=>subirImagen()} style={styles.botonImagen}>
                     <Text style={styles.botonTexto}>Subir Imagen</Text>
                     {imagen.url && (<Text>Url de la imagen{imagen}</Text>)}
@@ -248,6 +249,7 @@ const ModalFormulario = () => {
 
               <View style={styles.campo}>
                 <Text style={styles.label}>Contenido Multimedia: </Text>
+                <Text>{contenido.length ? contenido : 'Aquí se mostrará el contenido una vez se haya subido'}</Text>
                 <Pressable onPress={ ()=>subirContenido()} style={styles.botonImagen}>
                 {contenido.length ? (<Text>Url del contenido: {contenido}</Text>) :
                   (
