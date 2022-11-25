@@ -36,30 +36,29 @@ const PATOLOGIAS = [
 const Videos = ({navigation}) => {
     const {actividadesRecomendadas, setActividadesRecomendadas, patologia, setPatologia, token, usuario} = useAureos();
     const [actividades, setActividades] = useState([]);
-    const [videos, setVideos] = useState([]);
     const [cargando, setCargando] = useState(false);
 
     useEffect(()=>{
         if(!patologia.nombre){
           buscarRespuestas();
         }
-    },[])
+    },[patologia])
 
     useEffect(()=>{
-        if(!patologia.nombre && actividadesRecomendadas.length === 0){
+        if(patologia.nombre && actividadesRecomendadas.length === 0){
             obtenerActividades();
         }
-    },[])
+    },[patologia])
 
     useEffect(()=>{
-        if(actividades.length){
+        if(actividadesRecomendadas.length){
             const actividadesVideo = actividadesRecomendadas.map(actividad => actividad.contenido ? actividad : null);
             setActividades(actividadesVideo);
             console.log("actividades con video: ", actividadesVideo);
         }
 
     },[actividadesRecomendadas])
-    
+
     async function buscarRespuestas(){
         setCargando(true);
         const config = {
@@ -71,17 +70,15 @@ const Videos = ({navigation}) => {
         try {
           const {data} = await axios.post(`${process.env.API_URL}/formulario/buscar-patologia`, {idUsuario: usuario._id}, config);
           setPatologia(PATOLOGIAS[data.patologia - 1]);
-          console.log("consulta de las respuestas: ", PATOLOGIAS[data.patologia - 1]);
         } catch (error) {
-          console.log("Error jejeje: ", error.response.data.msg);
+          console.log("Error jejeje: ", error?.response?.data?.msg);
         }
         setCargando(false);
     }
 
     async function obtenerActividades(){
         setCargando(true);
-        console.log("patología: ", patologia);
-        if(token){
+        if(token && patologia.nombre){
           const config = {
             headers: {
               "Content-Type": 'application/json',
@@ -91,7 +88,6 @@ const Videos = ({navigation}) => {
           try {
             const {data} = await axios.post(`${process.env.API_URL}/actividades`, {categoria: patologia.nombre} , config);
             setActividadesRecomendadas(data);
-            console.log("Actividades: ", data);
           } catch (error) {
             console.log(error);
             console.log("Error jejeje: ", error?.response?.data?.msg);
@@ -107,16 +103,17 @@ const Videos = ({navigation}) => {
 
   return (
     <View style={styles.contenedor}>
-        {cargando ? <Text>Cargando</Text>: (
-            actividades.length > 0 ? actividades.map(actividad => <Actividad actividad={actividad} key={actividad._id}/>) : (
+        {cargando && <Text>Cargando</Text>}
+
+            {actividades.length ? actividades.map(actividad => <Actividad actividad={actividad}/>) : (
                 <>
-                <Image
-                    style={{
-                        width: 250,
-                        height: 200,
-                    }}
-                    source={{uri: 'https://www.intuitiveaccountant.com/downloads/9043/download/working-on-it.png?cb=287a36a90eae40f6bf55da1fddea7c1e'}}
-                />
+                    <Image
+                        style={{
+                            width: 250,
+                            height: 200,
+                        }}
+                        source={{uri: 'https://www.intuitiveaccountant.com/downloads/9043/download/working-on-it.png?cb=287a36a90eae40f6bf55da1fddea7c1e'}}
+                    />
                     <Text>Heeey, Aún no hay videos disponibles de esta categoría</Text>
                     <Text>Seguimos trabajando en eso!!!</Text>
                     <Pressable onPress={ ()=> volver()}
@@ -125,8 +122,7 @@ const Videos = ({navigation}) => {
                         <Text style={styles.botonTexto}>Volver</Text>
                     </Pressable>
                 </>
-            )
-        )}
+            )}
         
       <Navegacion visible={true}/>
     </View>
