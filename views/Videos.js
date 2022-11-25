@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react';
 import { View, Text, StyleSheet, Pressable, Image, Alert } from 'react-native';
 import {Button} from 'react-native-paper';
+import Actividad from '../components/Actividad';
 import Navegacion from '../components/Navegacion';
 import useAureos from '../hooks/useAureos';
 import axios from 'axios';
@@ -33,27 +34,53 @@ const PATOLOGIAS = [
 ]
 
 const Videos = ({navigation}) => {
-    const {actividadesRecomendadas, setActividadesRecomendadas, patologia, token, usuario} = useAureos();
+    const {actividadesRecomendadas, setActividadesRecomendadas, patologia, setPatologia, token, usuario} = useAureos();
     const [actividades, setActividades] = useState([]);
     const [videos, setVideos] = useState([]);
     const [cargando, setCargando] = useState(false);
 
     useEffect(()=>{
-        if(!patologia.nombre || actividades.length === 0){
+        if(!patologia.nombre){
+          buscarRespuestas();
+        }
+    },[])
+
+    useEffect(()=>{
+        if(!patologia.nombre && actividadesRecomendadas.length === 0){
             obtenerActividades();
         }
     },[])
+
     useEffect(()=>{
         if(actividades.length){
-            const actividadesVideo = actividades.map(actividad => actividad.contenido ? actividad : null);
+            const actividadesVideo = actividadesRecomendadas.map(actividad => actividad.contenido ? actividad : null);
             setActividades(actividadesVideo);
+            console.log("actividades con video: ", actividadesVideo);
         }
 
-    },[])
-
+    },[actividadesRecomendadas])
+    
+    async function buscarRespuestas(){
+        setCargando(true);
+        const config = {
+          headers: {
+            "Content-Type": 'application/json',
+            authorization: `Bearer ${token}`
+          }
+        }
+        try {
+          const {data} = await axios.post(`${process.env.API_URL}/formulario/buscar-patologia`, {idUsuario: usuario._id}, config);
+          setPatologia(PATOLOGIAS[data.patologia - 1]);
+          console.log("consulta de las respuestas: ", PATOLOGIAS[data.patologia - 1]);
+        } catch (error) {
+          console.log("Error jejeje: ", error.response.data.msg);
+        }
+        setCargando(false);
+    }
 
     async function obtenerActividades(){
         setCargando(true);
+        console.log("patología: ", patologia);
         if(token){
           const config = {
             headers: {
@@ -63,8 +90,8 @@ const Videos = ({navigation}) => {
           }
           try {
             const {data} = await axios.post(`${process.env.API_URL}/actividades`, {categoria: patologia.nombre} , config);
-            const bandera = await data;
-            setActividades(data);
+            setActividadesRecomendadas(data);
+            console.log("Actividades: ", data);
           } catch (error) {
             console.log(error);
             console.log("Error jejeje: ", error?.response?.data?.msg);
@@ -73,28 +100,32 @@ const Videos = ({navigation}) => {
         setCargando(false);
     }
 
+
     function volver(){
         navigation.goBack();
     }
+
   return (
     <View style={styles.contenedor}>
-        {actividades.length > 0 ? <Text>hola</Text> : (
-            <>
-            <Image
-                style={{
-                    width: 250,
-                    height: 200,
-                }}
-                source={{uri: 'https://www.intuitiveaccountant.com/downloads/9043/download/working-on-it.png?cb=287a36a90eae40f6bf55da1fddea7c1e'}}
-            />
-                <Text>Heeey, Aún no hay videos disponibles de esta categoría</Text>
-                <Text>Seguimos trabajando en eso!!!</Text>
-                <Pressable onPress={ ()=> volver()}
-                    style={styles.boton}
-                >
-                    <Text style={styles.botonTexto}>Volver</Text>
-                </Pressable>
-            </>
+        {cargando ? <Text>Cargando</Text>: (
+            actividades.length > 0 ? actividades.map(actividad => <Actividad actividad={actividad} key={actividad._id}/>) : (
+                <>
+                <Image
+                    style={{
+                        width: 250,
+                        height: 200,
+                    }}
+                    source={{uri: 'https://www.intuitiveaccountant.com/downloads/9043/download/working-on-it.png?cb=287a36a90eae40f6bf55da1fddea7c1e'}}
+                />
+                    <Text>Heeey, Aún no hay videos disponibles de esta categoría</Text>
+                    <Text>Seguimos trabajando en eso!!!</Text>
+                    <Pressable onPress={ ()=> volver()}
+                        style={styles.boton}
+                    >
+                        <Text style={styles.botonTexto}>Volver</Text>
+                    </Pressable>
+                </>
+            )
         )}
         
       <Navegacion visible={true}/>

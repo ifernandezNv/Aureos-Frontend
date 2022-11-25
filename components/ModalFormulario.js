@@ -108,7 +108,7 @@ const ModalFormulario = () => {
       data.append("cloud_name", process.env.CLOUDINARY_NAME);
       fetch(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_NAME}/video/upload`, { method:'POST', body: data })
         .then(res=>res.json())
-        .then(data=>{ console.log("Subida de contenido: ", data); setContenido(data.url); });
+        .then(data=>{ console.log(data); Alert.alert('Video Subido Correctamente');  setContenido(data.url); });
   }
 
   function handleSubmit(){
@@ -161,7 +161,7 @@ const ModalFormulario = () => {
       }
     }
     try {
-      const {data} = await axios.put(`${process.env.API_URL}/actividades/editar/${id}`, {titulo, descripcion, duracion, instrucciones, imagen, categoria}, config);
+      const {data} = await axios.put(`${process.env.API_URL}/actividades/editar/${id}`, {titulo, descripcion, duracion, instrucciones, imagen, categoria, contenido}, config);
       Alert.alert(data.msg);
       setTimeout(() => {
         setTitulo('');
@@ -175,7 +175,7 @@ const ModalFormulario = () => {
         navigation.navigate('Perfil');
       }, 3000);
     } catch (error) {
-      console.log(error.response.data);
+      console.log(error);
     }
 
   }
@@ -249,8 +249,10 @@ const ModalFormulario = () => {
               <View style={styles.campo}>
                 <Text style={styles.label}>Contenido Multimedia: </Text>
                 <Pressable onPress={ ()=>subirContenido()} style={styles.botonImagen}>
+                {contenido.length ? (<Text>Url del contenido: {contenido}</Text>) :
+                  (
                     <Text style={styles.botonTexto}>Subir Contenido</Text>
-                    {imagen.url && (<Text>Url del contenido{contenido.url}</Text>)}
+                  )}    
                 </Pressable>
               </View>
 
