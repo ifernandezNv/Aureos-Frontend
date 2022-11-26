@@ -50,7 +50,7 @@ function Actividades({route, navigation}) {
   },[])
 
   useEffect(()=>{
-      if(categoria === 'todas' || categoria === ''){
+      if(categoria === 'todas'){
         obtenerActividades();
         return;
       }else{
