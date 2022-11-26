@@ -35,7 +35,7 @@ const PATOLOGIAS = [
   }
 ]
 
-function Actividades({route, navigation}) {
+function Actividades({navigation}) {
 
   const {actividades, setActividades, usuario, token, actividadSeleccionada, setActividadSeleccionada} = useAureos();
 

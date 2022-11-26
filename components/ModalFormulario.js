@@ -16,7 +16,7 @@ const ModalFormulario = () => {
   const [instrucciones, setInstrucciones] = useState('');
   const [identificador, setIdentificador] = useState(Date.now());
   const [categoria, setCategoria] = useState('');
-  const [imagen, setImagen] = useState('https://res.cloudinary.com/ds6v7rbvr/image/upload/v1666577364/actividad_hablar_suzjnr.png');
+  const [imagen, setImagen] = useState('');
   const [contenido, setContenido] = useState('');
   const [id, setId] = useState('');
 
@@ -27,11 +27,11 @@ const ModalFormulario = () => {
       setId(actividadEditar._id);
       setTitulo(actividadEditar.titulo);
       setDescripcion(actividadEditar.descripcion);
-      
       setInstrucciones(actividadEditar.instrucciones);
       setIdentificador(actividadEditar.identificador);
       setCategoria(actividadEditar.categoria);
       setImagen(actividadEditar.imagen);
+      setContenido(actividadEditar.contenido);
     }
     setDuracion(actividadEditar.duracion ? actividadEditar.duracion : duracion);
   },[actividadEditar])
@@ -145,6 +145,7 @@ const ModalFormulario = () => {
         setInstrucciones('');
         setImagen('');
         setCategoria('');
+        setContenido('');
         setModal(!modal);
         navigation.navigate('Actividades');
       }, 3000);
@@ -170,6 +171,7 @@ const ModalFormulario = () => {
         setInstrucciones('');
         setImagen('');
         setCategoria('');
+        setContenido('');
         setModal(!modal);
         setActividadEditar({});
         navigation.navigate('Perfil');
