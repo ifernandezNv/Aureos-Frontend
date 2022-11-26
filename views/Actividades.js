@@ -1,13 +1,13 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, SafeAreaView, Platform, ScrollView, StyleSheet, Pressable, FlatList, Alert} from 'react-native';
+import {View, Text, ScrollView, StyleSheet, Pressable, FlatList, Alert} from 'react-native';
 import {Button} from 'react-native-paper';
 import useAureos from '../hooks/useAureos';
 
 import Navegacion from '../components/Navegacion';
 import Actividad from '../components/Actividad';
-import ModalFormulario from '../components/ModalFormulario';
 import axios from 'axios';
-
+import io from 'socket.io-client';
+let socket = '';
 const PATOLOGIAS = [
   {
     id: 1,
@@ -40,6 +40,10 @@ function Actividades({route, navigation}) {
   const {actividades, setActividades, usuario, token, actividadSeleccionada, setActividadSeleccionada} = useAureos();
 
   const [categoria, setCategoria] = useState('todas');
+
+  useEffect(()=>{
+    socket = io.connect(process.env.API_URL);
+  },[])
 
   useEffect(()=>{
     obtenerActividades();
