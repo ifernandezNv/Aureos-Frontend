@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Pressable, Image, Alert, ScrollView } from 'rea
 import Actividad from '../components/Actividad';
 import Navegacion from '../components/Navegacion';
 import useAureos from '../hooks/useAureos';
+import {Button} from 'react-native-paper';
 import axios from 'axios';
 
 const PATOLOGIAS = [
@@ -33,7 +34,7 @@ const PATOLOGIAS = [
 ]
 
 const Videos = ({navigation}) => {
-    const {actividadesRecomendadas, setActividadesRecomendadas, patologia, setPatologia, token, usuario} = useAureos();
+    const {patologia, setPatologia, token, usuario} = useAureos();
     const [actividades, setActividades] = useState([]);
     const [cargando, setCargando] = useState(false);
 
@@ -44,7 +45,7 @@ const Videos = ({navigation}) => {
     },[patologia])
 
     useEffect(()=>{
-        if(patologia.nombre && actividadesRecomendadas.length === 0){
+        if(patologia.nombre){
             obtenerActividades();
         }
     },[patologia])
@@ -76,7 +77,6 @@ const Videos = ({navigation}) => {
           }
           try {
             const {data} = await axios.post(`${process.env.API_URL}/actividades`, {categoria: patologia.nombre} , config);
-            setActividadesRecomendadas(data);
             const actividadesVideo = data.filter(actividad => actividad.contenido && actividad );
             setActividades(actividadesVideo);
           } catch (error) {
@@ -94,28 +94,31 @@ const Videos = ({navigation}) => {
 
   return (
     <View style={styles.contenedor}>
-        {cargando && <Text>Cargando</Text>}
-            <ScrollView style={{flex: 1, marginHorizontal: 10, marginVertical: 30}}>
-            {actividades.length ? actividades.map(actividad => <Actividad actividad={actividad} key={actividad._id}/>) : (
-              <>
-                <Image
-                    style={{
-                        width: 250,
-                        height: 200,
-                    }}
-                    source={{uri: 'https://www.intuitiveaccountant.com/downloads/9043/download/working-on-it.png?cb=287a36a90eae40f6bf55da1fddea7c1e'}}
-                />
-                <Text>Heeey, Aún no hay videos disponibles de esta categoría</Text>
-                <Text>Seguimos trabajando en eso!!!</Text>
-                <Pressable onPress={ ()=> volver()}
-                    style={styles.boton}
-                >
-                    <Text style={styles.botonTexto}>Volver</Text>
-                </Pressable>
-              </>
+        {cargando ? <Text>Cargando</Text> : (
+              <ScrollView style={{flex: 1, marginHorizontal: 10, marginVertical: 30}}>
+                <Button onPress={ ()=>volver()} style={{padding: 10}}>
+                  <Text style={{fontSize: 18}}>Volver</Text>
+                </Button>
+              {actividades.length ? actividades.map(actividad => <Actividad actividad={actividad} key={actividad._id}/>) : (
+                <>
+                  <Image
+                      style={{
+                          width: 250,
+                          height: 200,
+                      }}
+                      source={{uri: 'https://www.intuitiveaccountant.com/downloads/9043/download/working-on-it.png?cb=287a36a90eae40f6bf55da1fddea7c1e'}}
+                  />
+                  <Text>Heeey, Aún no hay videos disponibles de esta categoría</Text>
+                  <Text>Seguimos trabajando en eso!!!</Text>
+                  <Pressable onPress={ ()=> volver()}
+                      style={styles.boton}
+                  >
+                      <Text style={styles.botonTexto}>Volver</Text>
+                  </Pressable>
+                </>
+              )}
+              </ScrollView>
             )}
-            </ScrollView>
-            
         
       <Navegacion visible={true}/>
     </View>
