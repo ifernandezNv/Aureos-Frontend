@@ -42,7 +42,7 @@ function Actividades({route, navigation}) {
   const [categoria, setCategoria] = useState('todas');
 
   useEffect(()=>{
-    socket = io.connect(process.env.API_URL);
+    socket = io.connect('http://192.168.0.6:4000/');
   },[])
 
   useEffect(()=>{
