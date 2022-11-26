@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import { View, Text, StyleSheet, Pressable, Image, Alert, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Image, ScrollView } from 'react-native';
 import Actividad from '../components/Actividad';
 import Navegacion from '../components/Navegacion';
 import useAureos from '../hooks/useAureos';
@@ -81,7 +81,6 @@ const Videos = ({navigation}) => {
             setActividades(actividadesVideo);
           } catch (error) {
             console.log(error);
-            console.log("Error jejeje: ", error?.response?.data?.msg);
           }
         }
         setCargando(false);
@@ -152,6 +151,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: '700',
         color: '#6DD3B5',
+        textAlign: 'center'
     }
 })
 
