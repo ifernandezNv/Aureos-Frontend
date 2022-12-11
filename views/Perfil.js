@@ -159,7 +159,7 @@ function Perfil({navigation}) {
             <Text style={styles.saludo}>Hola: <Text style={styles.span}>{usuario.nombre}</Text> </Text>
             <Text>Haz {usuario.tipo !== 'usuario' ? 'creado' : 'realizado'} un total de: <Text style={styles.span}>{actividades.length} Actividades </Text></Text>
             {actividades.length !== 0 && usuario.tipo !== 'usuario' &&
-              <Text>Se han utilizado: <Text style={styles.span}>{cantidadUsuarios} {cantidadUsuarios > 1 ? 'Veces' : 'Vez'}</Text> tus actividades</Text>
+              <Text>Se han utilizado: <Text style={styles.span}>{cantidadUsuarios} {cantidadUsuarios !== 1 ? 'Veces' : 'Vez'}</Text> tus actividades</Text>
             }
             
           </View>

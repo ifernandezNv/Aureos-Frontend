@@ -251,12 +251,9 @@ const ModalFormulario = () => {
 
               <View style={styles.campo}>
                 <Text style={styles.label}>Contenido Multimedia: </Text>
-                <Text>{contenido.length ? contenido : 'Aquí se mostrará el contenido una vez se haya subido'}</Text>
+                <Text>{contenido?.length ? contenido : 'Aquí se mostrará el contenido una vez se haya subido'}</Text>
                 <Pressable onPress={ ()=>subirContenido()} style={styles.botonImagen}>
-                {contenido.length ? (<Text>Url del contenido: {contenido}</Text>) :
-                  (
                     <Text style={styles.botonTexto}>Subir Contenido</Text>
-                  )}    
                 </Pressable>
               </View>
 
