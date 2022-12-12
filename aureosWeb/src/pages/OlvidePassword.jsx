@@ -4,7 +4,6 @@ import {useActionData, Form} from 'react-router-dom';
 
 import axios from 'axios';
 
-
 export async function action({request, params}){
     const formData = await request.formData();
     const datos = Object.fromEntries(formData);
