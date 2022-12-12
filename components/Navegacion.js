@@ -22,10 +22,7 @@ function Navegacion({usuario, token, visible}) {
   function irAActividades(){
     navigation.navigate('Actividades', {usuario, token});
   }
-
-  function irAActividadesRecomendadas(){
-    navigation.navigate('Actividades Recomendadas', {usuario, token});
-  }
+  
   function irAlPerfil(){
     navigation.navigate('Perfil', {usuario, token});
   }
@@ -41,16 +38,6 @@ function Navegacion({usuario, token, visible}) {
           <View style={viewActual?.name === 'Actividades' && [styles.icono]}></View>
         </Button>
       </View>
-
-      {/* <View>
-        <Button
-          style={viewActual?.name === 'Actividades Recomendadas' ? [styles.active] : [styles.iconoNav]} 
-          onPress={ ()=>irAActividadesRecomendadas()}
-          icon='tools'
-        >
-          <View style={viewActual?.name === 'Actividades Recomendadas' && [styles.icono]}></View>
-        </Button>
-      </View> */}
 
       <View>
         <Button
