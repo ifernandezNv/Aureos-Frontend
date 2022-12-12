@@ -41,9 +41,6 @@ const Usuario = ({usuarioState}) => {
                 <Pressable style={[styles.boton, styles.botonEliminar]} onPress={ ()=>mostrarAlerta()}>
                     <Text style={styles.botonTexto}>Eliminar</Text>
                 </Pressable>
-                {/* <Pressable style={[styles.boton, styles.botonEditar]}>
-                    <Text style={styles.botonTexto}>Editar</Text>
-                </Pressable> */}
             </View>
         )}
     </View>
