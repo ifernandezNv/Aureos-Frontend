@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { useNavigation } from '@react-navigation/native';
 import {Button} from 'react-native-paper';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 
 function Navegacion({usuario, token, visible}) {
 
@@ -22,7 +22,7 @@ function Navegacion({usuario, token, visible}) {
   function irAActividades(){
     navigation.navigate('Actividades', {usuario, token});
   }
-  
+
   function irAlPerfil(){
     navigation.navigate('Perfil', {usuario, token});
   }
@@ -96,7 +96,6 @@ const styles = StyleSheet.create({
     fontSize: 40
   },
   active: {
-    // backgroundColor: '#000',
     color: '#6DD3B5',
     height: 50,
     display: 'flex',
