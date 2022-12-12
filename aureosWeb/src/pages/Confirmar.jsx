@@ -10,7 +10,6 @@ export async function loader({params}){
             error: false,
             msg: data.msg
         };
-        console.log(data);
     } catch (error) {
       console.log(error);
         return{
