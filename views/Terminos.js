@@ -1,12 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View, Pressable, ScrollView } from 'react-native';
-
 function Terminos({navigation}) {
-
     function irAlFormulario(){
         navigation.navigate('Formulario');
     }
-
   return (
     <View style={styles.contenedor}>
         <Text style={styles.titulo}>Términos y Condiciones</Text>

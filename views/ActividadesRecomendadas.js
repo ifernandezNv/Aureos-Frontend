@@ -5,33 +5,6 @@ import axios from 'axios';
 import useAureos from '../hooks/useAureos';
 import Navegacion from '../components/Navegacion';
 
-const PATOLOGIAS = [
-  {
-    id: 1,
-    nombre: 'Ansiedad',
-  },
-  {
-    id: 2,
-    nombre: 'Depresión',
-  },
-  {
-    id: 3,
-    nombre: 'Estrés',
-  },
-  {
-    id: 4,
-    nombre: 'Problemas de autoestima',
-  },
-  {
-    id: 5,
-    nombre: 'Perdida de sentido de la vida',
-  },
-  {
-    id: 6,
-    nombre: 'Relaciones',
-  }
-]
-
 function ActividadesRecomendadas({navigation}) {
 
   const {usuario, token, setActividadesRecomendadas, patologia, setPatologia} = useAureos();
@@ -73,7 +46,7 @@ function ActividadesRecomendadas({navigation}) {
           }, 2000);
         }
       } catch (error) {
-        console.log("Error jejeje: ",error?.response?.data?.msg);
+        console.log(error?.response?.data?.msg);
       }
     }
     setCargando(false);
