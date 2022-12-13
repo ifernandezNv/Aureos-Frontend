@@ -56,7 +56,6 @@ useEffect( ()=>{
   
     try {
       const {data} = await axios.post(`${process.env.API_URL}/usuarios/login`, {email, password});
-      console.log(data);
       setUsuario(data);
       setToken(data.token);
       const config = {

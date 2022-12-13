@@ -11,16 +11,12 @@ import Usuario from '../components/Usuario';
 import Navegacion from '../components/Navegacion';
 import ModalFormulario from '../components/ModalFormulario';
 import axios from 'axios';
-
-
 function Perfil({navigation}) {
   const {usuario, setUsuario, token, setToken, modal, setModal} = useAureos();
   const [actividades, setActividades] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
   const [cantidadUsuarios, setCantidadUsuarios] = useState(0);
   const [cargando, setCargando] = useState(false);
-  
-
   useEffect(()=>{
     if(usuario.tipo !== 'usuario'){
       obtenerActividadesCreadas();
@@ -28,8 +24,6 @@ function Perfil({navigation}) {
       obtenerActividadesCompletadas();
     }
   },[usuario])
-
-
   useEffect(()=>{
     if(usuarios.length === 0){
       obtenerUsuarios();
@@ -41,9 +35,7 @@ function Perfil({navigation}) {
       }
       obtenerSoloUsuarios();
     }
-    
   },[])
-
   useEffect(()=>{ 
     let cantidad = 0;
     let usuarios = 0;
