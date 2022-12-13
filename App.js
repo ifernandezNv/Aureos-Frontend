@@ -36,8 +36,6 @@ const theme = {
   }
 }
 
-// AppRegistry.registerComponent(appName, ()=> App);
-
 export default function App() {
   return (
     <GestureHandlerRootView style={{flex: 1}}>

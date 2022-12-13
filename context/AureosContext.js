@@ -1,10 +1,5 @@
-
-import React, {useState, useEffect, createContext} from 'react';
-import axios from 'axios';
-import {Alert} from 'react-native';
-
+import React, {useState, createContext} from 'react';
 const AureosContext = createContext();
-
 function AureosProvider({children}) {
     
     const [usuario, setUsuario] = useState({});
@@ -18,28 +13,19 @@ function AureosProvider({children}) {
   return (
     <AureosContext.Provider
         value={{
-            usuario,
-            setUsuario, 
-            token, 
-            setToken,
-            actividades,
-            setActividades,
-            actividadSeleccionada, 
-            setActividadSeleccionada,
-            actividadesRecomendadas, 
-            setActividadesRecomendadas,
-            actividadEditar,
-            setActividadEditar,
-            modal,
-            setModal,  
-            patologia, 
-            setPatologia          
+            usuario, setUsuario, 
+            token, setToken,
+            actividades, setActividades,
+            actividadSeleccionada, setActividadSeleccionada,
+            actividadesRecomendadas,  setActividadesRecomendadas,
+            actividadEditar, setActividadEditar,
+            modal, setModal,  
+            patologia, setPatologia          
         }}
     >
         {children}
     </AureosContext.Provider>
   )
 }
-
 export {AureosProvider}
 export default AureosContext
