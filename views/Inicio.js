@@ -48,7 +48,6 @@ function Inicio({navigation, route}) {
             }
           } catch (error) {
             console.log(error)
-            // Alert.alert(error?.response?.data?.msg);
             return;
           }
         }

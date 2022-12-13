@@ -1,15 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
-import Imagen from '../assets/logo.png';
 import { StyleSheet, Text, View, Pressable, TextInput, Keyboard, ScrollView, Alert } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 function CrearCuenta({navigation}) {
 
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [repetirPassword, setRepetirPassword] = useState('');
-
 
   function esconderTeclado(){
     Keyboard.dismiss();
