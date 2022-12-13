@@ -6,8 +6,6 @@ import useAureos from '../hooks/useAureos';
 import Navegacion from '../components/Navegacion';
 import Actividad from '../components/Actividad';
 import axios from 'axios';
-import io from 'socket.io-client';
-let socket = '';
 const PATOLOGIAS = [
   {
     id: 1,
@@ -40,10 +38,6 @@ function Actividades({navigation}) {
   const {actividades, setActividades, usuario, token, actividadSeleccionada, setActividadSeleccionada} = useAureos();
 
   const [categoria, setCategoria] = useState('todas');
-
-  useEffect(()=>{
-    socket = io.connect('http://192.168.0.6:4000/');
-  },[])
 
   useEffect(()=>{
     obtenerActividades();
