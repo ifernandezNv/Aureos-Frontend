@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Aureos",
-    "slug": "Aureos",
+    "slug": "aureos",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
@@ -32,10 +32,19 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/logo.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "45d8e65a-04bb-43da-81f2-680f6779f0f2"
+      }
+    },
+    "owner": "ifernandeznv"
   }
 }
