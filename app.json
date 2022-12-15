@@ -7,7 +7,7 @@
     "icon": "./assets/logo.png",
     "userInterfaceStyle": "dark",
     "splash": {
-      "image": "./assets/wave.svg",
+      "image": "./assets/logo.png",
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
@@ -35,7 +35,8 @@
       },
       "permissions": [
         "android.permission.RECORD_AUDIO"
-      ]
+      ],
+      "package": "com.ifernandeznv.aureos"
     },
     "web": {
       "favicon": "./assets/logo.png"
