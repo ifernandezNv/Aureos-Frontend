@@ -18,15 +18,15 @@
     "@react-navigation/native-stack": "^6.9.0",
     "@stream-io/flat-list-mvcp": "^0.10.2",
     "axios": "^1.1.2",
-    "expo": "~46.0.13",
-    "expo-av": "~12.0.4",
-    "expo-document-picker": "~10.3.0",
-    "expo-file-system": "~14.1.0",
+    "expo": "~49.0.3",
+    "expo-av": "~13.4.1",
+    "expo-document-picker": "~11.5.3",
+    "expo-file-system": "~15.4.2",
     "expo-haptics": "~11.3.0",
     "expo-image-manipulator": "~10.4.0",
-    "expo-image-picker": "~13.3.1",
+    "expo-image-picker": "~14.3.1",
     "expo-linear-gradient": "~11.4.0",
-    "expo-media-library": "~14.2.0",
+    "expo-media-library": "~15.4.0",
     "expo-permissions": "~13.2.0",
     "expo-sharing": "~10.3.0",
     "expo-status-bar": "~1.4.0",
@@ -44,7 +44,7 @@
     "react-native-svg": "12.3.0",
     "socket.io-client": "^4.5.4",
     "stream-chat-expo": "^5.8.0",
-    "expo-updates": "~0.14.7"
+    "expo-updates": "~0.18.10"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
